@@ -11,4 +11,5 @@ export default defineConfig({
   vite: { plugins: [tailwindcss()] },
   site: "https://arg.rileyperalta.com",
   integrations: [react(), sitemap()],
+  trailingSlash: "always",
 });
