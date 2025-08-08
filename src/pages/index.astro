@@ -1,11 +1,12 @@
 ---
 import "../styles/global.css";
-import { Button } from "../components/ui/button.tsx";
 import Layout from "../layouts/main.astro";
+import ResumeApp from "../components/ResumeApp";
 ---
 
-<Layout title="Home" description="Welcome to the home page">
-  <div class="grid h-screen place-items-center content-center">
-    <Button>Tailwind Button in Astro!</Button>
-  </div>
+<Layout
+  title="Resume Generator"
+  description="Create and optimize your resume with AI"
+>
+  <ResumeApp client:load />
 </Layout>
