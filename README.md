@@ -1,13 +1,42 @@
-# Astro with Tailwind
+# Resume Generator Web
 
-```sh
-npm create astro@latest -- --template with-tailwindcss
-```
+This project is a web-based rewrite of the [RP2/resume-gen](https://github.com/RP2/resume-gen) project. It aims to bring the powerful features of the original Python CLI tool to a modern, user-friendly web interface built with Astro and Tailwind CSS.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/with-tailwindcss/devcontainer.json)
+## Features
 
-Astro comes with [Tailwind](https://tailwindcss.com) support out of the box. This example showcases how to style your Astro project with Tailwind.
+- **Web Interface**: A sleek and intuitive UI for generating resumes.
+- **Batch Processing**: Upload multiple job descriptions and resumes for tailored outputs.
+- **Professional PDF Output**: Generate ATS-friendly, professionally formatted resumes.
+- **Customizable Options**: Add cover letters, suggestions, and more for personalized results.
+- **Powered by AI**: Leverages OpenAI for context extraction and resume tailoring.
 
-For complete setup instructions, please see our [Tailwind Integration Guide](https://docs.astro.build/en/guides/integrations-guide/tailwind).
+## Quickstart
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/RP2/resume-gen-web.git
+   cd resume-gen-web
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm install
+   ```
+
+3. Start the development server:
+
+   ```sh
+   npm run dev
+   ```
+
+4. Open your browser and navigate to `http://localhost:3000` to use the app.
+
+## About
+
+This project re-imagines the functionality of the original [RP2/resume-gen](https://github.com/RP2/resume-gen) Python CLI tool as a web application. It is designed to make resume generation more accessible and user-friendly while retaining all the powerful features of the original tool.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
