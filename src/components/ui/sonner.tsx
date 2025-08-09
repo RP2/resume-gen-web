@@ -23,13 +23,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <Sonner
-      theme={theme}
-      className="toaster group"
-      {...props}
-    />
-  );
+  return <Sonner theme={theme} className="toaster group" {...props} />;
 };
 
 export { Toaster };
