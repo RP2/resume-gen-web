@@ -2,7 +2,6 @@ import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Separator } from "./ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -17,20 +16,19 @@ import {
   CollapsibleContent,
 } from "./ui/collapsible";
 import {
-  Bot,
-  FileText,
-  Briefcase,
-  GraduationCap,
-  Wrench,
-  FolderOpen,
-  Download,
-  Shuffle,
-  Keyboard,
-  HardDrive,
   AlertTriangle,
+  Bot,
+  Briefcase,
+  Check,
   ChevronDown,
   ChevronUp,
-  Check,
+  Download,
+  FileText,
+  FolderOpen,
+  GraduationCap,
+  HardDrive,
+  Shuffle,
+  Wrench,
 } from "lucide-react";
 import Header from "./layout/Header";
 import SettingsModal from "./modals/SettingsModal";
@@ -52,9 +50,6 @@ import type {
 } from "../types/resume";
 import { createOpenAIClient, auditResume } from "../lib/openai/api";
 import { sampleResumeData } from "../data/sampleData";
-import { exportToPDF } from "../utils/pdf-export";
-import { saveResumeToFile, loadResumeFromFile } from "../utils/data-management";
-import type { ShortcutAction } from "../utils/keyboard-shortcuts";
 
 const initialResumeData: ResumeData = {
   personalInfo: {
@@ -74,15 +69,47 @@ const initialResumeData: ResumeData = {
   projects: [],
 };
 
+// Helper function to get initial resume data
+const getInitialResumeData = (): ResumeData => {
+  // Only run on client-side
+  if (typeof window === "undefined") {
+    return sampleResumeData; // SSR fallback
+  }
+
+  try {
+    const savedData = localStorage.getItem("resumeData");
+    const savedTimestamp = localStorage.getItem("resumeDataTimestamp");
+
+    if (savedData && savedTimestamp) {
+      const parsedData = JSON.parse(savedData);
+      const timestamp = parseInt(savedTimestamp);
+      const daysSinceLastSave =
+        (Date.now() - timestamp) / (1000 * 60 * 60 * 24);
+
+      // Only load if saved within the last 30 days
+      if (daysSinceLastSave <= 30) {
+        return parsedData;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to load from localStorage:", error);
+  }
+
+  // No valid saved data, return sample data
+  return sampleResumeData;
+};
+
 const ResumeApp: React.FC = () => {
-  const [resumeData, setResumeData] = useState<ResumeData>(sampleResumeData);
+  const [resumeData, setResumeData] = useState<ResumeData>(
+    getInitialResumeData(),
+  );
   const [apiKey, setApiKey] = useState("");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [showSampleConfirm, setShowSampleConfirm] = useState(false);
   const [isDataManagementOpen, setIsDataManagementOpen] = useState(true); // Auto-open for new users
-  const [isSampleDataLoaded, setIsSampleDataLoaded] = useState(true); // Start with sample data
+  const [isSampleDataLoaded, setIsSampleDataLoaded] = useState(false);
   const [hasUserData, setHasUserData] = useState(false);
   const [jobDescription, setJobDescription] = useState("");
   const [isOptimizing, setIsOptimizing] = useState(false);
@@ -90,8 +117,6 @@ const ResumeApp: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [showRecoveryDialog, setShowRecoveryDialog] = useState(false);
-  const [recoveryData, setRecoveryData] = useState<ResumeData | null>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
 
   // Keyboard shortcuts
@@ -140,7 +165,6 @@ const ResumeApp: React.FC = () => {
         setIsShortcutsOpen(false);
         setShowClearConfirm(false);
         setShowSampleConfirm(false);
-        setShowRecoveryDialog(false);
       }
     };
 
@@ -148,8 +172,12 @@ const ResumeApp: React.FC = () => {
     return () => document.removeEventListener("keydown", handleKeyboard);
   }, []);
 
-  // Check if user has entered any data
+  // Check if user has entered any data (simplified for new flow)
   const checkForUserData = useCallback((data: ResumeData) => {
+    const isCurrentlySample =
+      JSON.stringify(data) === JSON.stringify(sampleResumeData);
+    const isEmpty = JSON.stringify(data) === JSON.stringify(initialResumeData);
+
     const hasPersonalInfo = Object.values(data.personalInfo).some(
       (value) => value.trim() !== "",
     );
@@ -157,10 +185,6 @@ const ResumeApp: React.FC = () => {
     const hasEducation = data.education.length > 0;
     const hasSkills = data.skills.length > 0;
     const hasProjects = data.projects.length > 0;
-
-    const isCurrentlySample =
-      JSON.stringify(data) === JSON.stringify(sampleResumeData);
-    const isEmpty = JSON.stringify(data) === JSON.stringify(initialResumeData);
 
     const userHasData =
       !isCurrentlySample &&
@@ -180,6 +204,11 @@ const ResumeApp: React.FC = () => {
     }
   }, []);
 
+  // Initialize component state based on loaded data
+  useEffect(() => {
+    checkForUserData(resumeData);
+  }, []); // Run once on mount to set initial state
+
   // Update user data tracking and auto-save when resume data changes
   useEffect(() => {
     checkForUserData(resumeData);
@@ -194,8 +223,8 @@ const ResumeApp: React.FC = () => {
     }
 
     // Auto-save to localStorage (debounced)
-    setIsAutoSaving(true);
     const saveToStorage = setTimeout(() => {
+      setIsAutoSaving(true);
       try {
         localStorage.setItem("resumeData", currentDataString);
         localStorage.setItem("resumeDataTimestamp", Date.now().toString());
@@ -205,62 +234,13 @@ const ResumeApp: React.FC = () => {
         console.error("Failed to save to localStorage:", error);
         setIsAutoSaving(false);
       }
-    }, 2000); // Increase debounce to 2 seconds to reduce frequency
+    }, 2000); // Debounce to reduce frequency
 
     return () => {
       clearTimeout(saveToStorage);
       setIsAutoSaving(false);
     };
   }, [resumeData, checkForUserData]);
-
-  // Load data from localStorage on initial mount ONLY
-  useEffect(() => {
-    try {
-      const savedData = localStorage.getItem("resumeData");
-      const savedTimestamp = localStorage.getItem("resumeDataTimestamp");
-
-      if (savedData && savedTimestamp) {
-        const parsedData = JSON.parse(savedData);
-        const timestamp = parseInt(savedTimestamp);
-        const daysSinceLastSave =
-          (Date.now() - timestamp) / (1000 * 60 * 60 * 24);
-
-        // Only consider recovery if saved within the last 30 days
-        if (daysSinceLastSave <= 30) {
-          const isNotInitialData =
-            JSON.stringify(parsedData) !== JSON.stringify(initialResumeData);
-          const isNotSampleData =
-            JSON.stringify(parsedData) !== JSON.stringify(sampleResumeData);
-          const isDifferentFromCurrent =
-            JSON.stringify(parsedData) !== JSON.stringify(resumeData);
-
-          if (isNotInitialData && isNotSampleData && isDifferentFromCurrent) {
-            // Show recovery dialog
-            setRecoveryData(parsedData);
-            setShowRecoveryDialog(true);
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Failed to load from localStorage:", error);
-    }
-  }, []); // Remove resumeData dependency to prevent repeated recovery dialogs
-
-  const handleRecoverData = useCallback(() => {
-    if (recoveryData) {
-      setResumeData(recoveryData);
-      setIsSampleDataLoaded(false);
-      setHasUserData(true);
-      setIsDataManagementOpen(false); // Auto-minimize when recovering data
-      setShowRecoveryDialog(false);
-      setRecoveryData(null);
-    }
-  }, [recoveryData]);
-
-  const handleDiscardRecovery = useCallback(() => {
-    setShowRecoveryDialog(false);
-    setRecoveryData(null);
-  }, []);
 
   const handlePersonalInfoChange = useCallback((personalInfo: PersonalInfo) => {
     setResumeData((prev) => ({ ...prev, personalInfo }));
@@ -955,30 +935,6 @@ const ResumeApp: React.FC = () => {
               </Button>
               <Button variant="default" onClick={confirmLoadSampleData}>
                 Load Sample Data
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={showRecoveryDialog} onOpenChange={setShowRecoveryDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <FileText className="text-primary h-5 w-5" />
-                Recover Your Resume?
-              </DialogTitle>
-              <DialogDescription>
-                We found auto-saved resume data from your previous session.
-                Would you like to recover this data? This will replace the
-                current content.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={handleDiscardRecovery}>
-                Discard
-              </Button>
-              <Button variant="default" onClick={handleRecoverData}>
-                Recover Data
               </Button>
             </DialogFooter>
           </DialogContent>

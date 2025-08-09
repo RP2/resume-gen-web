@@ -2,14 +2,14 @@ import type { ResumeData } from "../types/resume";
 
 export const sampleResumeData: ResumeData = {
   personalInfo: {
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    website: "https://johndoe.dev",
-    linkedin: "https://linkedin.com/in/johndoe",
-    github: "https://github.com/johndoe",
+    firstName: "Example",
+    lastName: "Resume",
+    email: "example.resume@example.com",
+    phone: "+1 (555) 987-6543",
+    location: "New York, NY",
+    website: "https://example-resume.dev",
+    linkedin: "https://linkedin.com/in/example-resume",
+    github: "https://github.com/example-resume",
     summary:
       "Experienced Software Engineer with 5+ years of expertise in full-stack development, cloud architecture, and team leadership. Passionate about building scalable applications and mentoring junior developers.",
   },

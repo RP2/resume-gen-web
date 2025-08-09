@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-background/95 sticky top-0 z-50 flex w-full justify-around border-b backdrop-blur">
       <div className="flex items-center space-x-4">
-        <h1 className="text-lg font-semibold">Resume Generator</h1>
+        <h1 className="text-lg font-semibold">AI Resume Generator</h1>
       </div>
 
       <div className="my-2 flex items-center space-x-2">
