@@ -284,7 +284,7 @@ We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.
 - Write clean, documented code with TypeScript interfaces
 - Test AI features thoroughly (requires valid OpenAI API key)
 
-## 🚀 Deployment
+## 🚀 Alternate Deployment
 
 The application is designed for static hosting and can be deployed to:
 
@@ -342,7 +342,7 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 - [x] **Better Mobile Experience** - Further optimize mobile form editing and navigation
 - [x] **Keyboard Navigation** - Improve accessibility with comprehensive keyboard shortcuts
 
-### � Feature Enhancements
+### ✨ Feature Enhancements
 
 - [ ] **Resume Analytics** - Show metrics like word count, section completion, keyword density
 - [ ] **Job Board Integration** - Direct export/submit to LinkedIn, Indeed, etc.
