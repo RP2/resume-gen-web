@@ -87,7 +87,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
     <Card
       className={`${isPreviewMode ? "ring-primary ring-opacity-50 ring-2" : ""}`}
     >
-      <CardContent className="relative mx-auto max-w-4xl px-6 sm:px-8 leading-normal">
+      <CardContent className="relative mx-auto max-w-4xl px-6 leading-normal sm:px-8">
         {/* Preview mode indicator */}
         {isPreviewMode && (
           <div className="bg-primary text-primary-foreground absolute top-2 right-2 z-10 animate-pulse rounded-full px-3 py-1 text-xs font-medium">

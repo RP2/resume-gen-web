@@ -30,6 +30,7 @@ For most users, the free tier is more than sufficient. Deploy your own instance 
 1. Go to the [resume-gen-web GitHub repository](https://github.com/RP2/resume-gen-web)
 2. Click "Fork" to create your own copy
 3. Clone your fork locally (optional, for customization):
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/resume-gen-web.git
    cd resume-gen-web
