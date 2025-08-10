@@ -6,8 +6,8 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 
 ### 🎨 **Modern Resume Builder**
 
-- **Interactive Forms**: Clean, intuitive interface w### 🚀 Feature Enhancements
-- [ ] **Resume Analytics** - Show metrics like word count, section completion, keyword densityh tabbed sections for all resume data
+- **Interactive Forms**: Clean, intuitive interface with 🚀 Feature Enhancements
+- **Resume Analytics** - Show metrics like word count, section completion, keyword densityh tabbed sections for all resume data
 - **Real-time Preview**: See your resume update instantly as you type with highlight animations
 - **Responsive Design**: Fully mobile-optimized interface that works perfectly on all devices
 - **Dark/Light Mode**: Automatic system theme detection with manual toggle
