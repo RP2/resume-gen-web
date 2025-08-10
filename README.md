@@ -143,7 +143,7 @@ Test the AI features with built-in examples:
 - **Data Scientist**: Machine learning and analytics focus
 - **Product Manager**: Consumer product strategy and growth
 
-## � Deployment
+## 🚀 Deployment
 
 ### Cloudflare Pages (Recommended)
 
