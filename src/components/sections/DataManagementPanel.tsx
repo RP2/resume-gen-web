@@ -40,7 +40,7 @@ const DataManagementPanel: React.FC<DataManagementPanelProps> = ({
       onOpenChange={onOpenChange}
       className="bg-card text-card-foreground rounded-lg border shadow-sm"
     >
-      <CollapsibleTrigger className="hover:bg-muted/50 focus-visible:ring-ring w-full rounded-t-lg p-6 text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none">
+      <CollapsibleTrigger className="hover:bg-muted/50 focus-visible:ring-ring w-full rounded-t-lg p-3 text-left transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none sm:p-4 lg:p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <HardDrive className="h-5 w-5" />
@@ -56,8 +56,8 @@ const DataManagementPanel: React.FC<DataManagementPanelProps> = ({
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="p-6 pt-0">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="p-3 pt-0 sm:p-4 lg:p-6 lg:pt-0">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             <Button
               variant={isSampleDataLoaded ? "secondary" : "outline"}
               onClick={onLoadSampleData}

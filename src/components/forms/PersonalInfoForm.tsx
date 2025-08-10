@@ -18,11 +18,13 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Personal Information</h3>
+    <div className="space-y-3 sm:space-y-4" data-section="personalInfo">
+      <h3 className="text-base font-semibold sm:text-lg">
+        Personal Information
+      </h3>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
+        <div className="space-y-1.5 sm:space-y-2">
           <Label htmlFor="firstName">First Name *</Label>
           <Input
             id="firstName"

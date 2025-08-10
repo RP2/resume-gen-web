@@ -32,6 +32,8 @@ interface FormPanelProps {
   onEducationChange: (education: Education[]) => void;
   onSkillsChange: (skills: Skill[]) => void;
   onProjectsChange: (projects: Project[]) => void;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
 const FormPanel: React.FC<FormPanelProps> = ({
@@ -45,17 +47,19 @@ const FormPanel: React.FC<FormPanelProps> = ({
   onEducationChange,
   onSkillsChange,
   onProjectsChange,
+  activeTab = "personal",
+  onTabChange,
 }) => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <FileText className="h-5 w-5" />
+        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+          <FileText className="h-4 w-4 sm:h-5 sm:w-5" />
           Resume Builder
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <Tabs defaultValue="personal" className="w-full">
+      <CardContent className="space-y-3 sm:space-y-4">
+        <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="personal">
               <FileText className="h-4 w-4" />

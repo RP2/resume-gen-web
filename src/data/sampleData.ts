@@ -6,7 +6,7 @@ export const sampleResumeData: ResumeData = {
     lastName: "Resume",
     email: "example.resume@example.com",
     phone: "+1 (555) 987-6543",
-    location: "New York, NY",
+    location: "San Francisco, CA",
     website: "https://example-resume.dev",
     linkedin: "https://linkedin.com/in/example-resume",
     github: "https://github.com/example-resume",

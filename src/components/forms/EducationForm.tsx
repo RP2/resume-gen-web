@@ -51,10 +51,10 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-section="education">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Education</h3>
-        <Button onClick={addEducation} size="sm">
+        <h3 className="text-base font-semibold sm:text-lg">Education</h3>
+        <Button onClick={addEducation} size="sm" data-action="add-education">
           <Plus className="mr-2 h-4 w-4" />
           Add Education
         </Button>
@@ -65,12 +65,14 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
           No education added yet. Click "Add Education" to get started.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.map((education) => (
-            <Card key={education.id}>
-              <CardHeader className="pb-3">
+            <Card key={education.id} data-content="education">
+              <CardHeader className="pb-2 sm:pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Education Details</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    Education Details
+                  </CardTitle>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -99,8 +101,8 @@ const EducationForm: React.FC<EducationFormProps> = ({ data, onChange }) => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Institution *</Label>
                     <Input

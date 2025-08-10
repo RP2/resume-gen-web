@@ -72,10 +72,10 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-section="skills">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Skills</h3>
-        <Button onClick={addSkillCategory} size="sm">
+        <h3 className="text-base font-semibold sm:text-lg">Skills</h3>
+        <Button onClick={addSkillCategory} size="sm" data-action="add-category">
           <Plus className="mr-2 h-4 w-4" />
           Add Category
         </Button>
@@ -87,12 +87,18 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           type.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.map((skillCategory) => (
-            <Card key={skillCategory.id}>
-              <CardHeader className="pb-3">
+            <Card
+              key={skillCategory.id}
+              data-content="skill-category"
+              data-skill-category-id={skillCategory.id}
+            >
+              <CardHeader className="pb-2 sm:pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Skill Category</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    Skill Category
+                  </CardTitle>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -123,8 +129,8 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="space-y-2 sm:space-y-3">
                   <Label>Category Name *</Label>
                   <Input
                     value={skillCategory.category}
@@ -162,13 +168,17 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
                       type="button"
                       onClick={() => addSkill(skillCategory.id)}
                       size="sm"
+                      data-action="add-skill"
                     >
                       Add
                     </Button>
                   </div>
 
                   {skillCategory.skills.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div
+                      className="mt-3 flex flex-wrap gap-2"
+                      data-content="skill-list"
+                    >
                       {skillCategory.skills.map((skill, index) => (
                         <Badge
                           key={index}

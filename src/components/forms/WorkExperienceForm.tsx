@@ -80,10 +80,10 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-section="workExperience">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Work Experience</h3>
-        <Button onClick={addExperience} size="sm">
+        <h3 className="text-base font-semibold sm:text-lg">Work Experience</h3>
+        <Button onClick={addExperience} size="sm" data-action="add-experience">
           <Plus className="mr-2 h-4 w-4" />
           Add Experience
         </Button>
@@ -94,12 +94,12 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
           No work experience added yet. Click "Add Experience" to get started.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.map((experience) => (
             <Card key={experience.id}>
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-2 sm:pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">
+                  <CardTitle className="text-sm sm:text-base">
                     Experience Details
                   </CardTitle>
                   <div className="flex gap-2">
@@ -130,8 +130,8 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Company *</Label>
                     <Input
@@ -265,19 +265,28 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                       type="button"
                       onClick={() => addHighlight(experience.id)}
                       size="sm"
+                      data-action="add-achievement"
                     >
                       Add
                     </Button>
                   </div>
 
                   {experience.highlights.length > 0 && (
-                    <div className="mt-3 space-y-2">
+                    <div
+                      className="mt-3 space-y-2"
+                      data-section="workExperience"
+                      data-content="highlights"
+                    >
                       {experience.highlights.map((highlight, index) => (
                         <div
                           key={index}
                           className="bg-muted flex items-center gap-2 rounded p-2"
+                          data-content="achievement"
+                          data-index={index}
                         >
-                          <span className="flex-1 text-sm">{highlight}</span>
+                          <span className="flex-1 text-sm" data-content>
+                            {highlight}
+                          </span>
                           <Button
                             variant="ghost"
                             size="sm"

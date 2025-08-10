@@ -77,10 +77,10 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-section="projects">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Projects</h3>
-        <Button onClick={addProject} size="sm">
+        <h3 className="text-base font-semibold sm:text-lg">Projects</h3>
+        <Button onClick={addProject} size="sm" data-action="add-project">
           <Plus className="mr-2 h-4 w-4" />
           Add Project
         </Button>
@@ -91,12 +91,14 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
           No projects added yet. Click "Add Project" to showcase your work.
         </p>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.map((project) => (
-            <Card key={project.id}>
-              <CardHeader className="pb-3">
+            <Card key={project.id} data-content="project">
+              <CardHeader className="pb-2 sm:pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">Project Details</CardTitle>
+                  <CardTitle className="text-sm sm:text-base">
+                    Project Details
+                  </CardTitle>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -125,8 +127,8 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <CardContent className="space-y-3 sm:space-y-4">
+                <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Project Name *</Label>
                     <Input
@@ -207,13 +209,17 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                       type="button"
                       onClick={() => addTechnology(project.id)}
                       size="sm"
+                      data-action="add-technology"
                     >
                       Add
                     </Button>
                   </div>
 
                   {project.technologies.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div
+                      className="mt-3 flex flex-wrap gap-2"
+                      data-content="technology-list"
+                    >
                       {project.technologies.map((tech, index) => (
                         <Badge
                           key={index}

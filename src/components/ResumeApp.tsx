@@ -5,13 +5,14 @@ import ShortcutsHelp from "./modals/ShortcutsHelp";
 import FormPanel from "./sections/FormPanel";
 import AIOptimizationPanel from "./sections/AIOptimizationPanel";
 import DataManagementPanel from "./sections/DataManagementPanel";
-import PreviewPanel from "./sections/PreviewPanel";
+import CompletedSuggestions from "./sections/CompletedSuggestions";
 import ConfirmationDialogs from "./sections/ConfirmationDialogs";
 import { ModalProvider } from "./modals/ModalProvider";
 import { Toaster } from "./ui/sonner";
 import { useResumeApp } from "../hooks/useResumeApp";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 import { usePDFExport } from "../hooks/usePDFExport";
+import ResumePreview from "./preview/ResumePreview";
 
 const ResumeApp: React.FC = () => {
   const resumeRef = useRef<HTMLDivElement | null>(null);
@@ -30,9 +31,11 @@ const ResumeApp: React.FC = () => {
     jobDescription,
     isOptimizing,
     suggestions,
-    isExporting,
+    analysis,
     isAutoSaving,
     lastSaved,
+    activeTab,
+    completedSuggestions,
 
     // State setters
     setApiKey,
@@ -43,6 +46,7 @@ const ResumeApp: React.FC = () => {
     setIsDataManagementOpen,
     setJobDescription,
     setIsExporting,
+    setActiveTab,
 
     // Handlers
     handlePersonalInfoChange,
@@ -57,6 +61,9 @@ const ResumeApp: React.FC = () => {
     handleDownloadResume,
     handleUploadResume,
     handleOptimizeResume,
+    handleGoToSection,
+    handleMarkAsDone,
+    clearCompletedSuggestions,
   } = useResumeApp();
 
   const { handleExportPDF } = usePDFExport(resumeData);
@@ -96,54 +103,85 @@ const ResumeApp: React.FC = () => {
           onShortcutsClick={() => setIsShortcutsOpen(true)}
           onDownloadResume={handleDownloadResume}
           onUploadResume={handleUploadResume}
+          onExportPDF={handleExportPDFWithState}
         />
 
-        <main className="container mx-auto py-6">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Form Panel */}
-            <div className="space-y-6">
-              <FormPanel
-                personalInfo={resumeData.personalInfo}
-                workExperience={resumeData.workExperience}
-                education={resumeData.education}
-                skills={resumeData.skills}
-                projects={resumeData.projects}
-                onPersonalInfoChange={handlePersonalInfoChange}
-                onWorkExperienceChange={handleWorkExperienceChange}
-                onEducationChange={handleEducationChange}
-                onSkillsChange={handleSkillsChange}
-                onProjectsChange={handleProjectsChange}
-              />
+        <main className="container mx-auto px-4 py-6 sm:px-6">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+            {/* Left Column - Form and AI Panel */}
+            <div className="space-y-4 sm:space-y-6">
+              <div data-form-panel>
+                <FormPanel
+                  personalInfo={resumeData.personalInfo}
+                  workExperience={resumeData.workExperience}
+                  education={resumeData.education}
+                  skills={resumeData.skills}
+                  projects={resumeData.projects}
+                  onPersonalInfoChange={handlePersonalInfoChange}
+                  onWorkExperienceChange={handleWorkExperienceChange}
+                  onEducationChange={handleEducationChange}
+                  onSkillsChange={handleSkillsChange}
+                  onProjectsChange={handleProjectsChange}
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                />
+              </div>
 
               <AIOptimizationPanel
                 apiKey={apiKey}
                 jobDescription={jobDescription}
                 isOptimizing={isOptimizing}
                 suggestions={suggestions}
+                analysis={analysis}
+                completedSuggestions={completedSuggestions}
                 onJobDescriptionChange={setJobDescription}
                 onOptimizeResume={handleOptimizeResume}
                 onOpenSettings={() => setIsSettingsOpen(true)}
+                onGoToSection={handleGoToSection}
+                onMarkAsDone={handleMarkAsDone}
+                onClearCompletedSuggestions={clearCompletedSuggestions}
               />
 
-              <DataManagementPanel
-                isOpen={isDataManagementOpen}
-                onOpenChange={setIsDataManagementOpen}
-                isSampleDataLoaded={isSampleDataLoaded}
-                hasUserData={hasUserData}
-                isAutoSaving={isAutoSaving}
-                lastSaved={lastSaved}
-                onLoadSampleData={loadSampleData}
-                onClearAllData={clearAllData}
-              />
+              {/* Data Management - Desktop only */}
+              <div className="hidden lg:block">
+                <DataManagementPanel
+                  isOpen={isDataManagementOpen}
+                  onOpenChange={setIsDataManagementOpen}
+                  isSampleDataLoaded={isSampleDataLoaded}
+                  hasUserData={hasUserData}
+                  isAutoSaving={isAutoSaving}
+                  lastSaved={lastSaved}
+                  onLoadSampleData={loadSampleData}
+                  onClearAllData={clearAllData}
+                />
+              </div>
             </div>
 
-            {/* Preview Panel */}
-            <PreviewPanel
-              resumeData={resumeData}
-              resumeRef={resumeRef}
-              isExporting={isExporting}
-              onExportPDF={handleExportPDFWithState}
-            />
+            {/* Right Column - Preview and Mobile Data Management */}
+            <div className="space-y-4">
+              <div ref={resumeRef} className="overflow-hidden">
+                <ResumePreview data={resumeData} />
+              </div>
+
+              {/* Completed Suggestions */}
+              <CompletedSuggestions
+                completedSuggestions={completedSuggestions}
+              />
+
+              {/* Data Management - Mobile only */}
+              <div className="lg:hidden">
+                <DataManagementPanel
+                  isOpen={isDataManagementOpen}
+                  onOpenChange={setIsDataManagementOpen}
+                  isSampleDataLoaded={isSampleDataLoaded}
+                  hasUserData={hasUserData}
+                  isAutoSaving={isAutoSaving}
+                  lastSaved={lastSaved}
+                  onLoadSampleData={loadSampleData}
+                  onClearAllData={clearAllData}
+                />
+              </div>
+            </div>
           </div>
         </main>
 
