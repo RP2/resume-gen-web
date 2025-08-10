@@ -174,7 +174,7 @@ The app can also be deployed to any static hosting provider:
 - **Netlify**: Use Netlify Functions for API calls
 - **GitHub Pages**: Static files only (OpenAI integration limited by CORS)
 
-## �📋 Roadmap
+## 📋 Roadmap
 
 ### 🤖 Phase 1: Enhanced AI Features
 
