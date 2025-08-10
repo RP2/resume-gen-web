@@ -63,6 +63,10 @@ const AIOptimizationPanel: React.FC<AIOptimizationPanelProps> = ({
                   Click the settings button to add your API key and unlock
                   AI-powered resume suggestions
                 </p>
+                <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                  Note: The API key is temporary and will be cleared when you
+                  refresh the page
+                </p>
               </div>
               <Button onClick={onOpenSettings} variant="outline" size="sm">
                 Add API Key

@@ -53,18 +53,46 @@ export const usePDFExport = (resumeData: ResumeData) => {
               h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: #111827; }
               p { margin-bottom: 0.5rem; line-height: 1.6; }
               
+              /* Text colors */
+              .text-foreground { color: #111827; }
+              .text-muted-foreground { color: #6b7280; }
+              
+              /* Spacing utilities */
+              .space-y-5 > * + * { margin-top: 1.25rem; }
+              
               /* Layout utilities */
               .flex { display: flex; }
+              .flex-col { flex-direction: column; }
+              .flex-row { flex-direction: row; }
+              .items-start { align-items: flex-start; }
               .items-center { align-items: center; }
+              .justify-start { justify-content: flex-start; }
               .justify-center { justify-content: center; }
               .justify-between { justify-content: space-between; }
               .flex-wrap { flex-wrap: wrap; }
+              .flex-1 { flex: 1 1 0%; }
+              .min-w-0 { min-width: 0px; }
+              .shrink-0 { flex-shrink: 0; }
+              .gap-1 { gap: 0.25rem; }
               .gap-2 { gap: 0.5rem; }
               .gap-4 { gap: 1rem; }
               .text-center { text-align: center; }
+              .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+              .font-semibold { font-weight: 600; }
+              .break-words { overflow-wrap: break-word; }
+              .mb-2 { margin-bottom: 0.5rem; }
               .mb-4 { margin-bottom: 1rem; }
               .mb-6 { margin-bottom: 1.5rem; }
               .mb-8 { margin-bottom: 2rem; }
+              .mt-2 { margin-top: 0.5rem; }
+              
+              /* Responsive utilities for larger screens */
+              @media (min-width: 640px) {
+                .sm\\:flex-row { flex-direction: row; }
+                .sm\\:items-start { align-items: flex-start; }
+                .sm\\:justify-between { justify-content: space-between; }
+                .sm\\:ml-4 { margin-left: 1rem; }
+              }
               
               /* Header styling */
               header {

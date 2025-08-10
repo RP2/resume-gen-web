@@ -72,9 +72,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                 )}
               </Button>
             </div>
-            <p className="text-muted-foreground text-sm">
-              Your API key is stored locally and never sent to our servers.
-            </p>
+            <div className="text-muted-foreground space-y-1 text-sm">
+              <p>
+                Your API key is stored locally and never sent to our servers.
+              </p>
+              <p className="font-medium text-amber-600 dark:text-amber-400">
+                ⚠️ Note: Refreshing the page will clear your API key and you'll
+                need to re-enter it.
+              </p>
+            </div>
           </div>
 
           <div className="flex justify-end space-x-2">
