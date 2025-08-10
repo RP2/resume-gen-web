@@ -7,7 +7,7 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 ### 🎨 **Modern Resume Builder**
 
 - **Interactive Forms**: Clean, intuitive interface with 🚀 Feature Enhancements
-- **Resume Analytics** - Show metrics like word count, section completion, keyword densityh tabbed sections for all resume data
+- **Resume Analytics** - Show metrics like word count, section completion, keyword density tabbed sections for all resume data
 - **Real-time Preview**: See your resume update instantly as you type with highlight animations
 - **Responsive Design**: Fully mobile-optimized interface that works perfectly on all devices
 - **Dark/Light Mode**: Automatic system theme detection with manual toggle
@@ -127,7 +127,7 @@ npm run preview
 
 - **🔴 High Priority**: Critical improvements that significantly impact ATS scores
 - **🟡 Medium Priority**: Important optimizations for better job alignment
-- **🔵 Low Priority**: Polish suggestions for professional presentation
+- **🔵 Low Priority**: Suggestions for professional presentation
 
 #### **Navigation Features**
 
@@ -256,7 +256,7 @@ The AI will help you:
 ## 📊 Current Status
 
 - ✅ **Core Resume Builder**: Complete with all major sections
-- ✅ **ATS-Optimized PDF Export**: Professional, parseable output
+- ✅ **ATS-Optimized PDF Export**: Professional, parse-able output
 - ✅ **AI Resume Optimization**: Live job description analysis and optimization
 - ✅ **Privacy-First AI**: Client-side API key storage with direct OpenAI integration
 - ✅ **Local Data Management**: Auto-save, recovery, sample data
