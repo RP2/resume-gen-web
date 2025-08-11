@@ -1,0 +1,241 @@
+---
+import Layout from "../layouts/main.astro";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+---
+
+<Layout
+  title="Privacy Policy - Resume Builder"
+  description="Learn how your data is handled and protected in this privacy-focused resume builder"
+>
+  <main class="container mx-auto space-y-8 px-4 py-8">
+    <div class="space-y-4 text-center">
+      <h1 class="text-4xl font-bold">Privacy Policy</h1>
+      <p class="text-muted-foreground mx-auto max-w-3xl text-xl">
+        Your privacy is my top priority. This application is designed with
+        privacy-first principles, ensuring your personal information stays
+        secure and under your control.
+      </p>
+      <Badge variant="outline" className="text-sm">
+        Last updated: August 2025
+      </Badge>
+    </div>
+
+    <div class="grid gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🔒</span> Data Storage & Privacy
+          </CardTitle>
+          <CardDescription>
+            Your data stays on your device - no server-side storage
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div class="space-y-3">
+            <h4 class="font-semibold">Local Storage Only</h4>
+            <p class="text-muted-foreground text-sm">
+              All your resume data is stored locally in your browser using
+              localStorage. This means your personal information never leaves
+              your device and is not transmitted to any servers or third
+              parties.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">No Data Collection</h4>
+            <p class="text-muted-foreground text-sm">
+              I do not collect, store, or analyze any personal information,
+              usage patterns, or analytics data. The application functions
+              entirely within your browser.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🤖</span> AI Features & Data Usage
+          </CardTitle>
+          <CardDescription>
+            How AI optimization features handle your data
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div class="space-y-3">
+            <h4 class="font-semibold">OpenAI API Integration</h4>
+            <p class="text-muted-foreground text-sm">
+              When you use AI optimization features, your resume data and job
+              descriptions are sent to OpenAI's API for analysis. This is done
+              directly from your browser using your own API key.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">Your API Key, Your Control</h4>
+            <p class="text-muted-foreground text-sm">
+              You provide and control your own OpenAI API key. I do not have
+              access to your API key or the data you send to OpenAI. All API
+              requests are made directly from your browser to OpenAI's servers.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">Optional Feature</h4>
+            <p class="text-muted-foreground text-sm">
+              AI features are entirely optional. You can use the complete resume
+              builder without ever enabling AI features or providing an API key.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>📁</span> Data Export & Import
+          </CardTitle>
+          <CardDescription>
+            Full control over your resume data
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div class="space-y-3">
+            <h4 class="font-semibold">JSON Export</h4>
+            <p class="text-muted-foreground text-sm">
+              You can export all your resume data as a JSON file at any time.
+              This gives you complete ownership and portability of your
+              information.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">Data Import</h4>
+            <p class="text-muted-foreground text-sm">
+              Import previously exported data or sample templates. All imports
+              are processed locally in your browser.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🛡️</span> Security Measures
+          </CardTitle>
+          <CardDescription> How your data is protected </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div class="space-y-3">
+            <h4 class="font-semibold">Browser Security</h4>
+            <p class="text-muted-foreground text-sm">
+              Your data benefits from your browser's built-in security features,
+              including same-origin policies and localStorage isolation between
+              websites.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">No Tracking</h4>
+            <p class="text-muted-foreground text-sm">
+              This application does not use cookies, tracking scripts, or
+              analytics tools. Your browsing behavior and usage patterns are not
+              monitored.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">HTTPS Only</h4>
+            <p class="text-muted-foreground text-sm">
+              The application is served over HTTPS, ensuring all communications
+              are encrypted and secure.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🌐</span> Third-Party Services
+          </CardTitle>
+          <CardDescription>
+            External services and their data handling
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div class="space-y-3">
+            <h4 class="font-semibold">OpenAI (Optional)</h4>
+            <p class="text-muted-foreground text-sm">
+              When you choose to use AI features with your own API key, data is
+              sent directly to OpenAI's servers. Refer to
+              <a
+                href="https://openai.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline"
+              >
+                OpenAI's Privacy Policy
+              </a>
+              for their data handling practices.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">No Other Third Parties</h4>
+            <p class="text-muted-foreground text-sm">
+              The application does not integrate with any other third-party
+              services, social media platforms, or external APIs (except OpenAI
+              when you choose to enable it).
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <Separator />
+
+    <div class="space-y-6">
+      <h2 class="text-center text-2xl font-semibold">Your Rights & Control</h2>
+
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-3">
+          <h3 class="text-lg font-semibold">Complete Ownership</h3>
+          <p class="text-muted-foreground text-sm">
+            You own all the data you create in this application. Since
+            everything is stored locally, you have complete control over your
+            information.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-lg font-semibold">Data Deletion</h3>
+          <p class="text-muted-foreground text-sm">
+            You can clear all your data at any time using the application's data
+            management features or by clearing your browser's localStorage.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <Separator />
+
+    <div class="space-y-4 text-center">
+      <h3 class="text-lg font-semibold">Questions or Concerns?</h3>
+      <p class="text-muted-foreground mx-auto max-w-xl">
+        If you have any questions about this privacy policy or how your data is
+        handled, feel free to reach out through GitHub issues or discussions.
+      </p>
+      <a
+        href="https://github.com/RP2/resume-gen-web/issues"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-primary inline-flex items-center gap-2 hover:underline"
+      >
+        Contact via GitHub →
+      </a>
+    </div>
+  </main>
+</Layout>

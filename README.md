@@ -23,7 +23,7 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 - **Preview Mode**: See exactly what changes will look like before applying
 - **Token Usage Tracking**: Real-time monitoring of OpenAI API usage and costs
 - **Sample Job Templates**: Built-in job descriptions for Software Engineers, Data Scientists, and Product Managers
-- **Iterative Analysis**: AI learns from your changes for increasingly relevant suggestions
+- **Iterative Analysis**: The AI learns from your changes for increasingly relevant suggestions
 - **Gap Analysis**: Identifies missing keywords, skills, and experiences
 - **ATS Enhancement**: Specific recommendations for Applicant Tracking System optimization
 
@@ -266,7 +266,7 @@ The AI will help you:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for details.
+I welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for details.
 
 ### Development Setup
 

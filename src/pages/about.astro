@@ -1,25 +1,138 @@
 ---
 import Layout from "../layouts/main.astro";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 ---
 
 <Layout
-  title="About the web based Resume Generator"
-  description="Learn more about creating and optimizing your resume with AI"
+  title="About the Resume Builder"
+  description="Learn more about this modern, AI-powered resume builder and its features"
 >
-  <p>
-    This web-based Resume Generator leverages the power of AI to help you create
-    and optimize your resume effortlessly. Whether you're starting from scratch
-    or looking to enhance your existing resume, our tool provides personalized
-    suggestions and real-time feedback to ensure your resume stands out.
-  </p>
-  <p>Key features include:</p>
-  <ul>
-    <li>AI-driven content suggestions</li>
-    <li>Real-time resume analysis</li>
-    <li>Customizable templates</li>
-    <li>Export options for various formats</li>
-  </ul>
-  <p>
-    Get started today and take the first step towards landing your dream job!
-  </p>
+  <main class="container mx-auto space-y-8 px-4 py-8">
+    <div class="space-y-4 text-center">
+      <h1 class="text-4xl font-bold">About This Project</h1>
+      <p class="text-muted-foreground mx-auto max-w-3xl text-xl">
+        A modern, ATS-optimized resume builder built with cutting-edge web
+        technologies to help job seekers create professional resumes that pass
+        both human recruiters and AI screening systems.
+      </p>
+    </div>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🎨</span> Modern Resume Builder
+          </CardTitle>
+          <CardDescription>
+            Clean, intuitive interface with real-time preview
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div class="space-y-2">
+            <p class="text-sm">
+              • Interactive tabbed forms for all resume sections
+            </p>
+            <p class="text-sm">• Real-time preview with highlight animations</p>
+            <p class="text-sm">• Fully responsive design for all devices</p>
+            <p class="text-sm">• Dark/light mode with system theme detection</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>🤖</span> AI-Powered Optimization
+          </CardTitle>
+          <CardDescription>
+            Intelligent job matching and ATS optimization
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div class="space-y-2">
+            <p class="text-sm">• Job description analysis with match scores</p>
+            <p class="text-sm">• Priority-based improvement suggestions</p>
+            <p class="text-sm">• One-click application of recommendations</p>
+            <p class="text-sm">• Gap analysis and keyword optimization</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>📄</span> Professional PDF Export
+          </CardTitle>
+          <CardDescription>
+            ATS-compliant formatting with no external dependencies
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div class="space-y-2">
+            <p class="text-sm">• Browser-native PDF generation</p>
+            <p class="text-sm">• Professional typography and formatting</p>
+            <p class="text-sm">• Schema.org microdata for enhanced parsing</p>
+            <p class="text-sm">• Print-optimized layout</p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <span>💾</span> Smart Data Management
+          </CardTitle>
+          <CardDescription>
+            Secure local storage with import/export capabilities
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div class="space-y-2">
+            <p class="text-sm">• Local browser storage (privacy-focused)</p>
+            <p class="text-sm">• JSON export/import for data portability</p>
+            <p class="text-sm">• Sample data templates included</p>
+            <p class="text-sm">• No server-side data collection</p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+
+    <div class="grid gap-8 md:grid-cols-2">
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">About the Developer</h3>
+        <p class="text-muted-foreground">
+          This project was created as a solo endeavor to provide job seekers
+          with a modern, efficient tool for creating professional resumes. The
+          focus is on combining the latest web technologies with AI-powered
+          features to create an intuitive yet powerful resume builder.
+        </p>
+        <p class="text-muted-foreground">
+          The application prioritizes user privacy by storing all data locally
+          in your browser, with no server-side data collection or tracking.
+        </p>
+      </div>
+
+      <div class="space-y-4">
+        <h3 class="text-lg font-semibold">Open Source & Free</h3>
+        <p class="text-muted-foreground">
+          This project is open source and available on GitHub. Feel free to
+          contribute, report issues, or suggest improvements.
+        </p>
+        <a
+          href="https://github.com/RP2/resume-gen-web"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-primary inline-flex items-center gap-2 hover:underline"
+        >
+          View on GitHub →
+        </a>
+      </div>
+    </div>
+  </main>
 </Layout>
