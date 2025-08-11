@@ -225,12 +225,29 @@ export const usePDFExport = (resumeData: ResumeData) => {
                   color: #2563eb !important;
                 }
                 
+
+                /* Avoid page breaks inside large items and sections */
                 section {
+                  break-inside: avoid;
                   page-break-inside: avoid;
                 }
-                
                 .experience-item, .education-item, .project-item {
                   page-break-inside: avoid;
+                  break-inside: avoid;
+                }
+
+                /* Allow sections to break if needed to minimize whitespace */
+
+                /* Help paragraphs avoid being orphaned/widowed */
+                p {
+                  orphans: 3;
+                  widows: 3;
+                }
+
+                /* Keep section titles (h2) with their content */
+                h2 {
+                  break-after: avoid;
+                  page-break-after: avoid;
                 }
               }
             </style>
