@@ -202,6 +202,17 @@ export const usePDFExport = (resumeData: ResumeData) => {
               
               /* Print styles */
               @media print {
+                /* Ensure bullet points are visible in print */
+                ul, ol {
+                  list-style-type: disc !important;
+                  list-style-position: inside !important;
+                  margin-left: 1.5em !important;
+                  margin-bottom: 1em !important;
+                }
+                li {
+                  display: list-item !important;
+                  margin-bottom: 0.25em !important;
+                }
                 body {
                   padding: 0;
                   margin: 0;
@@ -226,14 +237,17 @@ export const usePDFExport = (resumeData: ResumeData) => {
                 }
                 
 
-                /* Avoid page breaks inside large items and sections */
-                section {
-                  break-inside: avoid;
-                  page-break-inside: avoid;
-                }
+                /* Allow sections to break across pages, but keep items together */
+                /* Remove break-inside from section */
                 .experience-item, .education-item, .project-item {
                   page-break-inside: avoid;
                   break-inside: avoid;
+                }
+
+                /* Keep section titles (h2) with their first content */
+                h2 {
+                  break-after: avoid;
+                  page-break-after: avoid;
                 }
 
                 /* Allow sections to break if needed to minimize whitespace */
