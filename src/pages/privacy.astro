@@ -171,7 +171,11 @@ import { Separator } from "@/components/ui/separator";
             <h4 class="font-semibold">OpenAI (Optional)</h4>
             <p class="text-muted-foreground text-sm">
               When you choose to use AI features with your own API key, data is
-              sent directly to OpenAI's servers. Refer to
+              sent directly to OpenAI's servers. <strong
+                >Your API key is never saved or persisted anywhere—it's only
+                stored in your browser's memory (React state) for the current
+                session and is cleared when you refresh or close the page.</strong
+              > I do not have access to your API key at any time. Refer to
               <a
                 href="https://openai.com/privacy"
                 target="_blank"
@@ -184,11 +188,49 @@ import { Separator } from "@/components/ui/separator";
             </p>
           </div>
           <div class="space-y-3">
+            <h4 class="font-semibold">Cloudflare Hosting</h4>
+            <p class="text-muted-foreground text-sm">
+              This site is hosted on Cloudflare Pages for content delivery and
+              security. Cloudflare may collect certain technical data such as IP
+              addresses, request headers, and performance metrics for security,
+              DDoS protection, and service optimization purposes. I do not
+              knowingly collect or access this data myself. Refer to
+              <a
+                href="https://www.cloudflare.com/privacy/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline"
+              >
+                Cloudflare's Privacy Policy
+              </a>
+              for their data handling practices.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <h4 class="font-semibold">Google Search Console</h4>
+            <p class="text-muted-foreground text-sm">
+              I use Google Search Console to monitor search performance and
+              identify SEO issues to improve the site's discoverability. This
+              service may collect search-related data and site performance
+              metrics. I do not use this data for tracking individual users.
+              Refer to
+              <a
+                href="https://policies.google.com/privacy"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-primary hover:underline"
+              >
+                Google's Privacy Policy
+              </a>
+              for their data handling practices.
+            </p>
+          </div>
+          <div class="space-y-3">
             <h4 class="font-semibold">No Other Third Parties</h4>
             <p class="text-muted-foreground text-sm">
-              The application does not integrate with any other third-party
-              services, social media platforms, or external APIs (except OpenAI
-              when you choose to enable it).
+              Apart from the services mentioned above, the application does not
+              integrate with any other third-party services, social media
+              platforms, or external APIs.
             </p>
           </div>
         </CardContent>
