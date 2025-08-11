@@ -159,6 +159,9 @@ const ResumeApp: React.FC = () => {
 
             {/* Right Column - Preview and Mobile Data Management */}
             <div className="space-y-4">
+              {/*
+                this resume preview is for demonstration only and provides a visual representation of an example resume until the user creates their own.
+              */}
               <div ref={resumeRef} className="overflow-hidden">
                 <ResumePreview data={resumeData} />
               </div>
