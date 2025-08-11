@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Badge } from "../ui/badge";

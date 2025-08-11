@@ -16,31 +16,6 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
 }) => {
   const { personalInfo, workExperience, education, skills, projects } = data;
 
-  // Helper function to determine if content has changed from original
-  const getHighlightClass = (
-    currentValue: string,
-    originalValue: string,
-    section: string,
-    type: "add" | "modify",
-  ) => {
-    if (!isPreviewMode || !originalData) return "";
-
-    if (type === "add" && currentValue && !originalValue) {
-      return "bg-primary/10 border border-primary/30 rounded px-1 animate-pulse";
-    }
-
-    if (
-      type === "modify" &&
-      currentValue !== originalValue &&
-      currentValue &&
-      originalValue
-    ) {
-      return "bg-secondary/30 border border-secondary/50 rounded px-1 animate-pulse";
-    }
-
-    return "";
-  };
-
   // Helper for highlighting text content
   const highlightContent = (
     current: string,

@@ -576,13 +576,6 @@ export const useResumeApp = () => {
 
   // Helper function to highlight and focus target content
   const highlightTargetContent = useCallback((suggestion: ResumeSuggestion) => {
-    const debugLog = (message: string, ...args: any[]) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log(`[Highlighting] ${message}`, ...args);
-      }
-    };
-
-    debugLog("Highlighting target content for:", suggestion);
     let targetElement: HTMLElement | null = null;
     let searchStrategy = "none";
 
@@ -592,24 +585,17 @@ export const useResumeApp = () => {
       const cleanContent = suggestion.currentContent
         .replace(/\s*\([^)]*\)\s*/g, "")
         .trim();
-      console.log("Cleaned skills content for matching:", cleanContent);
 
       // Skills-specific targeting for individual skills
       if (suggestion.itemId) {
         const skillCategory = document.querySelector(
           `[data-skill-category-id="${suggestion.itemId}"]`,
         );
-        console.log(
-          "Looking for skill category:",
-          suggestion.itemId,
-          skillCategory,
-        );
 
         if (skillCategory) {
           const skillBadges = skillCategory.querySelectorAll(
             "[data-content='skill-list'] .text-sm",
           );
-          console.log("Found skill badges:", skillBadges.length);
 
           for (const badge of skillBadges) {
             const badgeText = badge.textContent?.trim() || "";
@@ -623,7 +609,6 @@ export const useResumeApp = () => {
             ) {
               targetElement = badge as HTMLElement;
               searchStrategy = "content_container";
-              console.log("Found matching skill badge:", badgeText);
               break;
             }
           }
@@ -634,10 +619,6 @@ export const useResumeApp = () => {
       if (!targetElement) {
         const allSkillBadges = document.querySelectorAll(
           '[data-content="skill-list"] .text-sm',
-        );
-        console.log(
-          "Fallback search in all skill badges:",
-          allSkillBadges.length,
         );
 
         for (const badge of allSkillBadges) {
@@ -650,7 +631,6 @@ export const useResumeApp = () => {
           ) {
             targetElement = badge as HTMLElement;
             searchStrategy = "content_container";
-            console.log("Found matching skill badge (fallback):", badgeText);
             break;
           }
         }
@@ -693,23 +673,12 @@ export const useResumeApp = () => {
         if (exactMatch || normalizedMatch || partialMatch) {
           targetElement = inputElement;
           searchStrategy = "form_field";
-          console.log(
-            "Found in form field:",
-            inputElement.placeholder || inputElement.name,
-            exactMatch ? "exact" : normalizedMatch ? "normalized" : "partial",
-            "match",
-          );
           break;
         }
       }
 
       // If not found in form fields, search in content containers (like work experience descriptions)
       if (!targetElement) {
-        console.log(
-          "Searching content containers for:",
-          suggestion.currentContent,
-        );
-
         const contentSelectors = [
           // Achievement lists, descriptions, content areas
           "[data-content]",
@@ -750,17 +719,6 @@ export const useResumeApp = () => {
             if (exactMatch || normalizedMatch || partialMatch) {
               targetElement = element as HTMLElement;
               searchStrategy = "content_container";
-              console.log(
-                "Found in content container:",
-                selector,
-                textContent.substring(0, 50) + "...",
-                exactMatch
-                  ? "exact"
-                  : normalizedMatch
-                    ? "normalized"
-                    : "partial",
-                "match",
-              );
               break;
             }
           }
@@ -771,27 +729,16 @@ export const useResumeApp = () => {
 
     // Strategy 3: For add suggestions, find relevant add buttons using data attributes
     if (suggestion.type === "add" && !targetElement) {
-      console.log(
-        "Looking for add buttons for:",
-        suggestion.section,
-        suggestion.itemId,
-      );
-
       // Work experience specific - look for add achievement buttons
       if (suggestion.section === "workExperience") {
         const addAchievementBtns = document.querySelectorAll(
           '[data-action="add-achievement"]',
-        );
-        console.log(
-          "Found add achievement buttons:",
-          addAchievementBtns.length,
         );
 
         if (addAchievementBtns.length > 0) {
           // Use the first one or try to match by itemId if available
           targetElement = addAchievementBtns[0] as HTMLElement;
           searchStrategy = "add_button";
-          console.log("Using first add achievement button");
         } else {
           // Fallback to main add experience button
           const addExpBtn = document.querySelector(
@@ -800,7 +747,6 @@ export const useResumeApp = () => {
           if (addExpBtn) {
             targetElement = addExpBtn as HTMLElement;
             searchStrategy = "add_button";
-            console.log("Using add experience button");
           }
         }
       }
@@ -818,7 +764,6 @@ export const useResumeApp = () => {
             if (addSkillBtn) {
               targetElement = addSkillBtn as HTMLElement;
               searchStrategy = "add_button";
-              console.log("Found add skill button for category");
             }
           }
         } else {
@@ -829,7 +774,6 @@ export const useResumeApp = () => {
           if (addCategoryBtn) {
             targetElement = addCategoryBtn as HTMLElement;
             searchStrategy = "add_button";
-            console.log("Found add category button");
           }
         }
       }
@@ -847,7 +791,6 @@ export const useResumeApp = () => {
           if (element) {
             targetElement = element as HTMLElement;
             searchStrategy = "add_button";
-            console.log("Found button by data attribute:", attr);
             break;
           }
         }
@@ -861,18 +804,12 @@ export const useResumeApp = () => {
         if (sectionContainers.length > 0) {
           targetElement = sectionContainers[0] as HTMLElement;
           searchStrategy = "section_container";
-          console.log("Using section container fallback");
         }
       }
     }
 
     // Strategy 4: Final content search fallback for any remaining cases
     if (!targetElement && suggestion.currentContent) {
-      console.log(
-        "Final fallback content search for:",
-        suggestion.currentContent,
-      );
-
       // Look for any element containing the text, prioritizing interactive elements
       const allElements = document.querySelectorAll("*:not(script):not(style)");
       for (const element of allElements) {
@@ -887,11 +824,6 @@ export const useResumeApp = () => {
           searchStrategy = isInteractive
             ? "interactive_element"
             : "text_container";
-          console.log(
-            "Found in final fallback:",
-            element.tagName,
-            textContent.substring(0, 50) + "...",
-          );
           if (isInteractive) break; // Prefer interactive elements
         }
       }
@@ -899,12 +831,6 @@ export const useResumeApp = () => {
 
     // Apply highlighting if we found a target
     if (targetElement) {
-      console.log(
-        "Highlighting element with strategy:",
-        searchStrategy,
-        targetElement,
-      );
-
       targetElement.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -938,7 +864,6 @@ export const useResumeApp = () => {
             startIndex = content.indexOf(suggestion.currentContent);
             if (startIndex !== -1) {
               endIndex = startIndex + suggestion.currentContent.length;
-              console.log("Found exact match at position:", startIndex);
             }
 
             // Strategy 2: Case insensitive exact match
@@ -948,10 +873,6 @@ export const useResumeApp = () => {
               startIndex = lowerContent.indexOf(lowerTarget);
               if (startIndex !== -1) {
                 endIndex = startIndex + suggestion.currentContent.length;
-                console.log(
-                  "Found case-insensitive match at position:",
-                  startIndex,
-                );
               }
             }
 
@@ -990,7 +911,6 @@ export const useResumeApp = () => {
 
                 startIndex = originalIndex;
                 endIndex = startIndex + normalizedTarget.length;
-                console.log("Found normalized match at position:", startIndex);
               }
             }
 
@@ -1021,10 +941,6 @@ export const useResumeApp = () => {
                   if (sentenceIndex !== -1) {
                     startIndex = sentenceIndex;
                     endIndex = sentenceIndex + sentence.length;
-                    console.log(
-                      `Found containing sentence: "${sentence.substring(0, 50)}..."`,
-                      startIndex,
-                    );
                     break;
                   }
                 }
@@ -1039,8 +955,6 @@ export const useResumeApp = () => {
                 .slice(0, 4); // Increase to 4 words for better context
 
               if (significantWords.length > 0) {
-                console.log("Looking for significant words:", significantWords);
-
                 // Try to find a sequence of these words
                 for (let i = 0; i < significantWords.length - 1; i++) {
                   const firstWord = significantWords[i];
@@ -1077,9 +991,6 @@ export const useResumeApp = () => {
                           content.length,
                         );
                       }
-                      console.log(
-                        `Found word sequence: "${firstWord}" + "${secondWord}" at ${startIndex}, selecting to ${endIndex}`,
-                      );
                       break;
                     }
                   }
@@ -1105,9 +1016,6 @@ export const useResumeApp = () => {
                         content.length,
                       );
                     }
-                    console.log(
-                      `Found first word "${firstWord}" at ${startIndex}, selecting chunk to ${endIndex}`,
-                    );
                   }
                 }
               }
@@ -1118,15 +1026,9 @@ export const useResumeApp = () => {
               // Ensure we don't go beyond the content length
               endIndex = Math.min(endIndex, content.length);
               const selectedText = content.substring(startIndex, endIndex);
-              console.log(
-                `Selecting text from ${startIndex} to ${endIndex}: "${selectedText}"`,
-              );
               targetElement.setSelectionRange(startIndex, endIndex);
             } else {
               // Last resort: select all content so user knows which field to edit
-              console.log(
-                "Could not find specific text, selecting all content for user awareness",
-              );
               targetElement.select();
             }
           }

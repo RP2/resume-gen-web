@@ -1,4 +1,3 @@
-import React from "react";
 import { Settings, Download, Upload, Keyboard, FileText } from "lucide-react";
 import { Button } from "../ui/button";
 import { ModeToggle } from "../ModeToggle";
