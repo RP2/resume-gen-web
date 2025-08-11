@@ -12,6 +12,10 @@ export function Footer() {
               A modern, ATS-optimized resume builder with AI-powered
               optimization features.
             </p>
+            <p className="text-destructive text-xs font-semibold">
+              Disclaimer: This project is a work in progress. Features and
+              results may change.
+            </p>
           </div>
 
           {/* Links */}
