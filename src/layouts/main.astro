@@ -36,6 +36,27 @@ const { title, description } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://arg.rileyperalta.com/" />
+    <meta property="og:site_name" content={title} />
+    <meta
+      property="og:image"
+      content="https://arg.rileyperalta.com/favicon.svg"
+    />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:alt" content="AI Resume Generator Logo" />
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content="https://arg.rileyperalta.com/favicon.svg"
+    />
+    <meta name="twitter:image:alt" content="AI Resume Generator Logo" />
   </head>
   <body>
     <slot />
