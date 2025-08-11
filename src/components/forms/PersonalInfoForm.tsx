@@ -48,7 +48,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="location">Location *</Label>
+          <Label htmlFor="location">Location</Label>
           <Input
             id="location"
             value={data.location}
@@ -73,7 +73,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone *</Label>
+          <Label htmlFor="phone">Phone</Label>
           <Input
             id="phone"
             value={data.phone}
