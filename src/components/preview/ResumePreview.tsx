@@ -138,7 +138,7 @@ const ResumePreview: React.FC<ResumePreviewProps> = ({
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-primary underline underline-offset-2 transition-colors"
+                  className="hover:text-primary max-w-[15rem] truncate align-middle underline underline-offset-2 transition-colors sm:max-w-[20rem]"
                 >
                   {personalInfo.linkedin.startsWith("http")
                     ? personalInfo.linkedin

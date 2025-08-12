@@ -1,6 +1,6 @@
-# Contributing to Resume Generator Web
+# Contributing to the Resume Builder Web App
 
-Thank you for considering contributing to the Resume Generator Web project! We welcome contributions of all kinds, including bug fixes, feature enhancements, documentation improvements, and more.
+Thank you for considering contributing to the AI Resume Builder Web project! We welcome contributions of all kinds, including bug fixes, feature enhancements, documentation improvements, and more.
 
 ## Getting Started
 

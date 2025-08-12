@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({
     <header className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
         <h1 className="text-sm font-semibold lg:text-lg">
-          AI Resume Generator
+          AI Resume Builder
         </h1>
 
         <div className="flex items-center space-x-2">
@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onUploadResume}
               title="Load resume (Ctrl+O)"
             >
-              <Upload className="mr-2 h-4 w-4" />
+              <Upload className="sm:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Load Data</span>
             </Button>
           )}
@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onDownloadResume}
               title="Save resume data (Ctrl+S)"
             >
-              <Download className="mr-2 h-4 w-4" />
+              <Download className="sm:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Save Data</span>
             </Button>
           )}
@@ -56,7 +56,7 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onExportPDF}
               title="Export PDF"
             >
-              <FileText className="mr-2 h-4 w-4" />
+              <FileText className="sm:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Download PDF</span>
             </Button>
           )}

@@ -63,7 +63,7 @@ const DataManagementPanel: React.FC<DataManagementPanelProps> = ({
               className="w-full"
               disabled={isSampleDataLoaded && !hasUserData}
             >
-              <Shuffle className="mr-2 h-4 w-4" />
+              <Shuffle className="mr-2 hidden h-4 w-4 sm:block" />
               {isSampleDataLoaded ? "Sample Loaded" : "Load Sample Data"}
             </Button>
             <Button

@@ -1,10 +1,10 @@
 # Deployment Guide
 
-This document explains how to deploy your own instance of the Resume Generator with AI optimization to Cloudflare Pages for higher usage limits.
+This document explains how to deploy your own instance of the Resume Builder with AI optimization to Cloudflare Pages for higher usage limits.
 
 ## Overview
 
-The Resume Generator uses OpenAI's GPT-4o model for AI optimization. By default, it's designed to work within OpenAI's generous free tier limits, but if you need higher usage limits, you can deploy your own instance.
+The Resume Builder uses OpenAI's GPT-4o model for AI optimization. By default, it's designed to work within OpenAI's generous free tier limits, but if you need higher usage limits, you can deploy your own instance.
 
 ## OpenAI Free Tier Limits (as of 2025)
 

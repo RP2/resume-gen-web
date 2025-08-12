@@ -1,4 +1,4 @@
-# Resume Builder Web
+# Resume Builder Web App
 
 A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. Create professional resumes that pass both human recruiters and AI screening systems with intelligent job-matching suggestions.
 
@@ -338,6 +338,7 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 
 - [ ] **Multiple Resume Templates** - Add different visual styles and layouts for resumes
 - [ ] **Theme Customization** - Allow users to customize colors, fonts, and spacing
+- [ ] **Font Selection** - Offer multiple font choices in the app and PDF export
 - [x] **Print Optimization** - Ensure resume looks great when printed directly from browser
 - [x] **Better Mobile Experience** - Further optimize mobile form editing and navigation
 - [x] **Keyboard Navigation** - Improve accessibility with comprehensive keyboard shortcuts
@@ -354,11 +355,6 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 - [ ] **Performance Optimization** - Lazy loading, code splitting, bundle size reduction
 - [ ] **Testing Suite** - Comprehensive unit and integration tests
 - [ ] **CI/CD Pipeline** - Automated testing and deployment workflows
-
-### 📱 Platform Expansion
-
-- [ ] **Progressive Web App** - Add PWA capabilities for mobile installation
-- [ ] **API Development** - Backend API for advanced features and data sync
 
 ### 🌟 Advanced Features
 
