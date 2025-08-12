@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
+import { ResumeAppSkeleton } from "@/components/ResumeAppSkeleton";
 import Header from "./layout/Header";
 import SettingsModal from "./modals/SettingsModal";
 import ShortcutsHelp from "./modals/ShortcutsHelp";
@@ -16,6 +17,11 @@ import ResumePreview from "./preview/ResumePreview";
 
 const ResumeApp: React.FC = () => {
   const resumeRef = useRef<HTMLDivElement | null>(null);
+  // hydrated state: only render after client mount
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   const {
     // State
@@ -94,6 +100,10 @@ const ResumeApp: React.FC = () => {
     onClearAllData: clearAllData,
     onCloseModals: handleCloseModals,
   });
+
+  if (!hydrated) {
+    return <ResumeAppSkeleton />;
+  }
 
   return (
     <ModalProvider>

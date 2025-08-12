@@ -20,9 +20,7 @@ const Header: React.FC<HeaderProps> = ({
   return (
     <header className="bg-background/95 sticky top-0 z-50 border-b backdrop-blur">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
-        <h1 className="text-sm font-semibold lg:text-lg">
-          AI Resume Builder
-        </h1>
+        <h1 className="text-sm font-semibold lg:text-lg">AI Resume Builder</h1>
 
         <div className="flex items-center space-x-2">
           {onUploadResume && (
@@ -32,8 +30,8 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onUploadResume}
               title="Load resume (Ctrl+O)"
             >
-              <Upload className="sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Load Data</span>
+              <Upload className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Load Data</span>
             </Button>
           )}
 
@@ -44,8 +42,8 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onDownloadResume}
               title="Save resume data (Ctrl+S)"
             >
-              <Download className="sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Save Data</span>
+              <Download className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Save Data</span>
             </Button>
           )}
 
@@ -56,8 +54,8 @@ const Header: React.FC<HeaderProps> = ({
               onClick={onExportPDF}
               title="Export PDF"
             >
-              <FileText className="sm:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Download PDF</span>
+              <FileText className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">Download PDF</span>
             </Button>
           )}
 
@@ -66,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({
               variant="outline"
               size="sm"
               onClick={onShortcutsClick}
-              className="hidden sm:flex"
+              className="hidden lg:flex"
               title="Keyboard shortcuts (Ctrl+/)"
             >
               <Keyboard className="h-4 w-4" />
@@ -82,6 +80,7 @@ const Header: React.FC<HeaderProps> = ({
             <Settings className="h-4 w-4" />
           </Button>
 
+          {/* light and dark heme toggle */}
           <ModeToggle />
         </div>
       </div>
