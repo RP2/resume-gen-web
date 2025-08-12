@@ -6,7 +6,7 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 
 ### 🎨 **Modern Resume Builder**
 
-- **Interactive Forms**: Clean, intuitive interface with 🚀 Feature Enhancements
+- **Interactive Forms**: Clean, intuitive interface with granular control, including drag-and-drop reordering and inline editing
 - **Resume Analytics** - Show metrics like word count, section completion, keyword density tabbed sections for all resume data
 - **Real-time Preview**: See your resume update instantly as you type with highlight animations
 - **Responsive Design**: Fully mobile-optimized interface that works perfectly on all devices
@@ -31,8 +31,8 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 
 - **Browser-Native Generation**: No external dependencies or server processing required
 - **ATS-Compliant Formatting**: Optimized for maximum parsing accuracy by recruitment systems
-- **Professional Typography**: Times New Roman, proper spacing, semantic HTML structure
-- **Schema.org Microdata**: Structured data for enhanced AI and ATS parsing
+- **Professional Typography**: Sans-serif font, proper spacing, semantic HTML structure
+- **Schema.org Microdata**: Structured data for enhanced AI and ATS parsing in the HTML resume preview
 - **Print-Optimized Layout**: Perfect formatting for both digital and print applications
 - **One-Click Export**: Simple PDF generation with proper page breaks and styling
 
@@ -47,9 +47,9 @@ A modern, ATS-optimized resume builder built with Astro, React, and TypeScript. 
 
 ### ♿ **Accessibility & UX Excellence**
 
-- **Full Keyboard Navigation**: Complete keyboard shortcuts support (Ctrl+P for PDF, Ctrl+S for save)
+- **Full Keyboard Navigation**: Complete keyboard shortcuts support (Ctrl+P for PDF, Ctrl+S for .json saving)
 - **Screen Reader Optimized**: Proper ARIA labels, semantic HTML, and announcement regions
-- **High Contrast Themes**: WCAG AA compliant color schemes for better visibility
+- **High Contrast Theme**: WCAG AA compliant color schemes for better visibility
 - **Mobile-First Design**: Optimized touch interfaces with finger-friendly buttons
 - **Smart Form Behavior**: Auto-expanding text areas, helpful placeholders, and validation
 - **Contextual Tooltips**: Interactive help text throughout the interface
@@ -378,6 +378,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built with [Astro](https://astro.build/), [React](https://reactjs.org/), and [shadcn/ui](https://ui.shadcn.com/)
 - Icons by [Lucide](https://lucide.dev/)
 - AI optimization powered by [OpenAI](https://openai.com/)
+- [dnd-kit](https://dndkit.com/)  
+  Drag-and-drop library powering interactive lists
 
 ---
 
