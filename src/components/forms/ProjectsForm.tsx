@@ -1,5 +1,20 @@
 import { useState } from "react";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, GripVertical, X } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  MeasuringStrategy,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -17,6 +32,155 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
   const [newTechInputs, setNewTechInputs] = useState<{ [key: string]: string }>(
     {},
   );
+  const [editingTech, setEditingTech] = useState<{
+    [projectId: string]: number | null;
+  }>({});
+  const [editingTechValue, setEditingTechValue] = useState<{
+    [projectId: string]: string;
+  }>({});
+
+  function updateTechInline(projectId: string, index: number, value: string) {
+    const project = data.find((p) => p.id === projectId);
+    if (project) {
+      const newTechs = [...project.technologies];
+      newTechs[index] = value.trim();
+      updateProject(projectId, "technologies", newTechs);
+      setEditingTech((prev) => ({ ...prev, [projectId]: null }));
+      setEditingTechValue((prev) => ({ ...prev, [projectId]: "" }));
+    }
+  }
+
+  function handleTechDragEnd(projectId: string, event: any) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const project = data.find((p) => p.id === projectId);
+    if (project) {
+      const oldIndex = project.technologies.findIndex(
+        (_, i) => `tech-${projectId}-${i}` === active.id,
+      );
+      const newIndex = project.technologies.findIndex(
+        (_, i) => `tech-${projectId}-${i}` === over.id,
+      );
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newTechs = arrayMove(project.technologies, oldIndex, newIndex);
+        updateProject(projectId, "technologies", newTechs);
+      }
+    }
+  }
+
+  function SortableTech({
+    id,
+    tech,
+    index,
+    projectId,
+  }: {
+    id: string;
+    tech: string;
+    index: number;
+    projectId: string;
+  }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    const isEditing = editingTech[projectId] === index;
+
+    return (
+      <Badge
+        ref={setNodeRef}
+        style={style}
+        variant="secondary"
+        className={`bg-muted flex items-center gap-1 rounded border border-transparent px-2 py-1 text-sm transition-colors${isDragging ? "border-primary/60 bg-accent/60" : ""}`}
+        data-content="tech"
+        data-index={index}
+        {...attributes}
+      >
+        <button
+          {...listeners}
+          className={`text-muted-foreground cursor-grab px-1 focus:outline-none ${isDragging ? "cursor-grabbing" : ""}`}
+          tabIndex={-1}
+          aria-label="Drag to reorder"
+          type="button"
+          title="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        {isEditing ? (
+          <Input
+            className="min-w-[4ch] flex-1 border-none bg-transparent px-0 text-sm shadow-none focus:ring-0 focus-visible:ring-0"
+            value={editingTechValue[projectId] ?? tech}
+            autoFocus
+            onChange={(e) =>
+              setEditingTechValue((prev) => ({
+                ...prev,
+                [projectId]: e.target.value,
+              }))
+            }
+            onBlur={() => {
+              updateTechInline(
+                projectId,
+                index,
+                editingTechValue[projectId] ?? tech,
+              );
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                updateTechInline(
+                  projectId,
+                  index,
+                  editingTechValue[projectId] ?? tech,
+                );
+              } else if (e.key === "Escape") {
+                setEditingTech((prev) => ({ ...prev, [projectId]: null }));
+                setEditingTechValue((prev) => ({ ...prev, [projectId]: "" }));
+              }
+            }}
+            aria-label="Edit technology"
+            placeholder="Edit technology..."
+          />
+        ) : (
+          <span
+            className="hover:text-primary focus-visible:text-primary flex-1 cursor-pointer rounded border border-transparent px-1 text-sm transition-colors outline-none hover:underline focus-visible:underline"
+            tabIndex={0}
+            onClick={() => {
+              setEditingTech((prev) => ({ ...prev, [projectId]: index }));
+              setEditingTechValue((prev) => ({ ...prev, [projectId]: tech }));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setEditingTech((prev) => ({ ...prev, [projectId]: index }));
+                setEditingTechValue((prev) => ({ ...prev, [projectId]: tech }));
+              }
+            }}
+            role="button"
+            aria-label="Edit technology"
+          >
+            {tech}
+          </span>
+        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="ml-1 h-5 w-5 p-0"
+          onClick={() => removeTechnology(projectId, index)}
+          aria-label="Remove technology"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </Badge>
+    );
+  }
 
   const addProject = () => {
     const newProject: Project = {
@@ -216,28 +380,44 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
                   </div>
 
                   {project.technologies.length > 0 && (
-                    <div
-                      className="mt-3 flex flex-wrap gap-2"
-                      data-content="technology-list"
+                    <DndContext
+                      sensors={useSensors(
+                        useSensor(PointerSensor, {
+                          activationConstraint: { distance: 5 },
+                        }),
+                      )}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) =>
+                        handleTechDragEnd(project.id, event)
+                      }
+                      measuring={{
+                        droppable: {
+                          strategy: MeasuringStrategy.Always,
+                        },
+                      }}
                     >
-                      {project.technologies.map((tech, index) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-sm"
+                      <SortableContext
+                        items={project.technologies.map(
+                          (_, i) => `tech-${project.id}-${i}`,
+                        )}
+                        strategy={rectSortingStrategy}
+                      >
+                        <div
+                          className="mt-3 flex flex-wrap gap-2"
+                          data-content="technology-list"
                         >
-                          {tech}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="ml-2 h-4 w-4 p-0"
-                            onClick={() => removeTechnology(project.id, index)}
-                          >
-                            x
-                          </Button>
-                        </Badge>
-                      ))}
-                    </div>
+                          {project.technologies.map((tech, index) => (
+                            <SortableTech
+                              key={`tech-${project.id}-${index}`}
+                              id={`tech-${project.id}-${index}`}
+                              tech={tech}
+                              index={index}
+                              projectId={project.id}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   )}
                 </div>
               </CardContent>

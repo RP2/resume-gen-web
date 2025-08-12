@@ -1,5 +1,20 @@
 import { useState } from "react";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, GripVertical, X } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  MeasuringStrategy,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -16,6 +31,159 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
   const [newSkillInputs, setNewSkillInputs] = useState<{
     [key: string]: string;
   }>({});
+  const [editingSkill, setEditingSkill] = useState<{
+    [catId: string]: number | null;
+  }>({});
+  const [editingSkillValue, setEditingSkillValue] = useState<{
+    [catId: string]: string;
+  }>({});
+  // update skill inline
+  function updateSkillInline(catId: string, index: number, value: string) {
+    const category = data.find((cat) => cat.id === catId);
+    if (category) {
+      const newSkills = [...category.skills];
+      newSkills[index] = value.trim();
+      updateSkillCategory(catId, "skills", newSkills);
+      setEditingSkill((prev) => ({ ...prev, [catId]: null }));
+      setEditingSkillValue((prev) => ({ ...prev, [catId]: "" }));
+    }
+  }
+
+  // handle drag end for skills
+  function handleSkillDragEnd(catId: string, event: any) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const category = data.find((cat) => cat.id === catId);
+    if (category) {
+      const oldIndex = category.skills.findIndex(
+        (_, i) => `skill-${catId}-${i}` === active.id,
+      );
+      const newIndex = category.skills.findIndex(
+        (_, i) => `skill-${catId}-${i}` === over.id,
+      );
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newSkills = arrayMove(category.skills, oldIndex, newIndex);
+        updateSkillCategory(catId, "skills", newSkills);
+      }
+    }
+  }
+
+  // sortable skill item
+  function SortableSkill({
+    id,
+    skill,
+    index,
+    catId,
+  }: {
+    id: string;
+    skill: string;
+    index: number;
+    catId: string;
+  }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    const isEditing = editingSkill[catId] === index;
+
+    return (
+      <Badge
+        ref={setNodeRef}
+        style={style}
+        variant="secondary"
+        className={`bg-muted flex items-center gap-1 border border-transparent px-2 py-1 text-sm transition-colors${isDragging ? "border-primary/60 bg-accent/60" : ""}`}
+        data-content="skill"
+        data-index={index}
+        {...attributes}
+      >
+        {/* drag handle */}
+        <button
+          {...listeners}
+          className={`text-muted-foreground cursor-grab px-1 focus:outline-none ${isDragging ? "cursor-grabbing" : ""}`}
+          tabIndex={-1}
+          aria-label="Drag to reorder"
+          type="button"
+          title="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        {/* editable skill */}
+        {isEditing ? (
+          <Input
+            className="min-w-[4ch] flex-1 border-none bg-transparent px-0 text-sm shadow-none focus:ring-0 focus-visible:ring-0"
+            value={editingSkillValue[catId] ?? skill}
+            autoFocus
+            onChange={(e) =>
+              setEditingSkillValue((prev) => ({
+                ...prev,
+                [catId]: e.target.value,
+              }))
+            }
+            onBlur={() => {
+              updateSkillInline(
+                catId,
+                index,
+                editingSkillValue[catId] ?? skill,
+              );
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                updateSkillInline(
+                  catId,
+                  index,
+                  editingSkillValue[catId] ?? skill,
+                );
+              } else if (e.key === "Escape") {
+                setEditingSkill((prev) => ({ ...prev, [catId]: null }));
+                setEditingSkillValue((prev) => ({ ...prev, [catId]: "" }));
+              }
+            }}
+            aria-label="Edit skill"
+            placeholder="Edit skill..."
+          />
+        ) : (
+          <span
+            className="hover:text-primary focus-visible:text-primary flex-1 cursor-pointer rounded border border-transparent px-1 text-sm transition-colors outline-none hover:underline focus-visible:underline"
+            tabIndex={0}
+            onClick={() => {
+              setEditingSkill((prev) => ({ ...prev, [catId]: index }));
+              setEditingSkillValue((prev) => ({ ...prev, [catId]: skill }));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setEditingSkill((prev) => ({ ...prev, [catId]: index }));
+                setEditingSkillValue((prev) => ({ ...prev, [catId]: skill }));
+              }
+            }}
+            role="button"
+            aria-label="Edit skill"
+          >
+            {skill}
+          </span>
+        )}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="ml-1 h-5 w-5 p-0"
+          onClick={() => removeSkill(catId, index)}
+          aria-label="Remove skill"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </Badge>
+    );
+  }
 
   const addSkillCategory = () => {
     const newCategory: Skill = {
@@ -175,28 +343,44 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
                   </div>
 
                   {skillCategory.skills.length > 0 && (
-                    <div
-                      className="mt-3 flex flex-wrap gap-2"
-                      data-content="skill-list"
+                    <DndContext
+                      sensors={useSensors(
+                        useSensor(PointerSensor, {
+                          activationConstraint: { distance: 5 },
+                        }),
+                      )}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) =>
+                        handleSkillDragEnd(skillCategory.id, event)
+                      }
+                      measuring={{
+                        droppable: {
+                          strategy: MeasuringStrategy.Always,
+                        },
+                      }}
                     >
-                      {skillCategory.skills.map((skill, index) => (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="text-sm"
+                      <SortableContext
+                        items={skillCategory.skills.map(
+                          (_, i) => `skill-${skillCategory.id}-${i}`,
+                        )}
+                        strategy={rectSortingStrategy}
+                      >
+                        <div
+                          className="mt-3 flex flex-wrap gap-2"
+                          data-content="skill-list"
                         >
-                          {skill}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="ml-2 h-4 w-4 p-0"
-                            onClick={() => removeSkill(skillCategory.id, index)}
-                          >
-                            x
-                          </Button>
-                        </Badge>
-                      ))}
-                    </div>
+                          {skillCategory.skills.map((skill, index) => (
+                            <SortableSkill
+                              key={`skill-${skillCategory.id}-${index}`}
+                              id={`skill-${skillCategory.id}-${index}`}
+                              skill={skill}
+                              index={index}
+                              catId={skillCategory.id}
+                            />
+                          ))}
+                        </div>
+                      </SortableContext>
+                    </DndContext>
                   )}
                 </div>
               </CardContent>

@@ -1,5 +1,19 @@
 import { useState } from "react";
-import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Plus, Trash2, Eye, EyeOff, GripVertical } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -18,6 +32,12 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
   onChange,
 }) => {
   const [highlights, setHighlights] = useState<{ [key: string]: string }>({});
+  const [editingHighlight, setEditingHighlight] = useState<{
+    [expId: string]: number | null;
+  }>({});
+  const [editingHighlightValue, setEditingHighlightValue] = useState<{
+    [expId: string]: string;
+  }>({});
 
   const addExperience = () => {
     const newExperience: WorkExperience = {
@@ -78,6 +98,168 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
       updateExperience(expId, "highlights", newHighlights);
     }
   };
+
+  // sortable highlight item component
+  function SortableHighlight({
+    id,
+    highlight,
+    index,
+    expId,
+  }: {
+    id: string;
+    highlight: string;
+    index: number;
+    expId: string;
+  }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+    };
+
+    const isEditing = editingHighlight[expId] === index;
+
+    return (
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`bg-muted flex items-center gap-1 rounded border border-transparent px-2 py-1 text-sm transition-colors${isDragging ? "border-primary/60 bg-accent/60" : ""}`}
+        data-content="achievement"
+        data-index={index}
+        {...attributes}
+      >
+        {/* drag handle */}
+        <button
+          {...listeners}
+          className={`text-muted-foreground group-hover:text-primary group-focus-within:text-primary cursor-grab px-1 focus:outline-none ${isDragging ? "cursor-grabbing" : ""}`}
+          tabIndex={-1}
+          aria-label="Drag to reorder"
+          type="button"
+          title="Drag to reorder"
+        >
+          <GripVertical className="h-4 w-4" />
+        </button>
+        {/* editable highlight */}
+        {isEditing ? (
+          <Textarea
+            className="flex-1 resize-none text-sm"
+            value={editingHighlightValue[expId] ?? highlight}
+            autoFocus
+            rows={Math.max(
+              2,
+              (editingHighlightValue[expId] ?? highlight).split("\n").length,
+            )}
+            onChange={(e) =>
+              setEditingHighlightValue((prev) => ({
+                ...prev,
+                [expId]: e.target.value,
+              }))
+            }
+            onBlur={() => {
+              // save on blur
+              updateHighlightInline(
+                expId,
+                index,
+                editingHighlightValue[expId] ?? highlight,
+              );
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                updateHighlightInline(
+                  expId,
+                  index,
+                  editingHighlightValue[expId] ?? highlight,
+                );
+              } else if (e.key === "Escape") {
+                setEditingHighlight((prev) => ({ ...prev, [expId]: null }));
+                setEditingHighlightValue((prev) => ({ ...prev, [expId]: "" }));
+              }
+            }}
+            aria-label="Edit highlight"
+            placeholder="Edit achievement..."
+          />
+        ) : (
+          <span
+            className="hover:text-primary hover:border-primary/60 hover:bg-accent/60 focus-visible:text-primary focus-visible:border-primary/80 focus-visible:bg-accent/60 flex-1 cursor-pointer rounded border border-transparent px-1 text-sm transition-colors outline-none focus-visible:underline"
+            data-content
+            tabIndex={0}
+            onClick={() => {
+              setEditingHighlight((prev) => ({ ...prev, [expId]: index }));
+              setEditingHighlightValue((prev) => ({
+                ...prev,
+                [expId]: highlight,
+              }));
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setEditingHighlight((prev) => ({ ...prev, [expId]: index }));
+                setEditingHighlightValue((prev) => ({
+                  ...prev,
+                  [expId]: highlight,
+                }));
+              }
+            }}
+            role="button"
+            aria-label="Edit highlight"
+          >
+            {highlight}
+          </span>
+        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => removeHighlight(expId, index)}
+        >
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      </div>
+    );
+  }
+
+  // update highlight inline
+  function updateHighlightInline(expId: string, index: number, value: string) {
+    const experience = data.find((exp) => exp.id === expId);
+    if (experience) {
+      const newHighlights = [...experience.highlights];
+      newHighlights[index] = value.trim();
+      updateExperience(expId, "highlights", newHighlights);
+      setEditingHighlight((prev) => ({ ...prev, [expId]: null }));
+      setEditingHighlightValue((prev) => ({ ...prev, [expId]: "" }));
+    }
+  }
+
+  // handle drag end for highlights
+  function handleHighlightDragEnd(expId: string, event: any) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const experience = data.find((exp) => exp.id === expId);
+    if (experience) {
+      const oldIndex = experience.highlights.findIndex(
+        (_, i) => `highlight-${expId}-${i}` === active.id,
+      );
+      const newIndex = experience.highlights.findIndex(
+        (_, i) => `highlight-${expId}-${i}` === over.id,
+      );
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newHighlights = arrayMove(
+          experience.highlights,
+          oldIndex,
+          newIndex,
+        );
+        updateExperience(expId, "highlights", newHighlights);
+      }
+    }
+  }
 
   return (
     <div className="space-y-4 sm:space-y-6" data-section="workExperience">
@@ -227,22 +409,6 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    value={experience.description}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      updateExperience(
-                        experience.id,
-                        "description",
-                        e.target.value,
-                      )
-                    }
-                    placeholder="Brief description of your role and responsibilities..."
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-2">
                   <Label>Key Achievements & Highlights</Label>
                   <div className="flex gap-2">
                     <Input
@@ -272,33 +438,40 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                   </div>
 
                   {experience.highlights.length > 0 && (
-                    <div
-                      className="mt-3 space-y-2"
-                      data-section="workExperience"
-                      data-content="highlights"
+                    <DndContext
+                      sensors={useSensors(
+                        useSensor(PointerSensor, {
+                          activationConstraint: { distance: 5 },
+                        }),
+                      )}
+                      collisionDetection={closestCenter}
+                      onDragEnd={(event) =>
+                        handleHighlightDragEnd(experience.id, event)
+                      }
                     >
-                      {experience.highlights.map((highlight, index) => (
+                      <SortableContext
+                        items={experience.highlights.map(
+                          (_, i) => `highlight-${experience.id}-${i}`,
+                        )}
+                        strategy={verticalListSortingStrategy}
+                      >
                         <div
-                          key={index}
-                          className="bg-muted flex items-center gap-2 rounded p-2"
-                          data-content="achievement"
-                          data-index={index}
+                          className="mt-3 space-y-2"
+                          data-section="workExperience"
+                          data-content="highlights"
                         >
-                          <span className="flex-1 text-sm" data-content>
-                            {highlight}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() =>
-                              removeHighlight(experience.id, index)
-                            }
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
+                          {experience.highlights.map((highlight, index) => (
+                            <SortableHighlight
+                              key={`highlight-${experience.id}-${index}`}
+                              id={`highlight-${experience.id}-${index}`}
+                              highlight={highlight}
+                              index={index}
+                              expId={experience.id}
+                            />
+                          ))}
                         </div>
-                      ))}
-                    </div>
+                      </SortableContext>
+                    </DndContext>
                   )}
                 </div>
               </CardContent>

@@ -328,9 +328,9 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 
 ### 🎯 High Priority
 
-- [ ] **Drag & Drop Reordering** - Allow users to reorder resume sections (work experience entries, education, projects, skills) via drag and drop
-- [ ] **About Page** - Create `/about` page explaining the project, features, and development story
-- [ ] **Privacy Page** - Create `/privacy` page detailing data handling, localStorage usage, and AI processing
+- [x] **Drag & Drop Reordering** - Allow users to reorder resume sections (work experience entries, education, projects, skills) via drag and drop
+- [x] **About Page** - Create `/about` page explaining the project, features, and development story
+- [x] **Privacy Page** - Create `/privacy` page detailing data handling, localStorage usage, and AI processing
 - [x] **PDF Export** - Re-implement PDF generation with better formatting and styling options
 - [x] **Data Import/Export** - Allow users to backup/restore their resume data as JSON files
 
@@ -345,8 +345,6 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 ### ✨ Feature Enhancements
 
 - [ ] **Resume Analytics** - Show metrics like word count, section completion, keyword density
-- [ ] **Job Board Integration** - Direct export/submit to LinkedIn, Indeed, etc.
-- [ ] **URL Sharing** - Generate shareable links for resume previews
 - [ ] **Version History** - Track and allow rollback to previous resume versions
 - [x] **Smart Suggestions** - AI-powered suggestions based on job descriptions
 
@@ -360,14 +358,12 @@ PUBLIC_NODE_ENV=production               # Optional: controls debug logging
 ### 📱 Platform Expansion
 
 - [ ] **Progressive Web App** - Add PWA capabilities for mobile installation
-- [ ] **Browser Extension** - Quick resume updates and job application tracking
-- [ ] **Desktop App** - Electron wrapper for offline desktop usage
 - [ ] **API Development** - Backend API for advanced features and data sync
 
 ### 🌟 Advanced Features
 
 - [ ] **Collaboration** - Share and get feedback on resumes from others
-- [ ] **ATS Optimization** - Specific suggestions for Applicant Tracking Systems
+- [x] **ATS Optimization** - Specific suggestions for Applicant Tracking Systems
 - [ ] **Cover Letter Generator** - AI-powered cover letter creation
 - [ ] **Interview Prep** - Generate interview questions based on resume content
 - [ ] **Career Path Suggestions** - AI recommendations for career development
