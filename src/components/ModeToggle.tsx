@@ -1,11 +1,12 @@
 import { Moon, Sun } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 
+// toggles theme and updates localStorage
 export function ModeToggle() {
   const toggleTheme = () => {
     const html = document.documentElement;
-    if (html.classList.contains("dark")) {
+    const isDark = html.classList.contains("dark");
+    if (isDark) {
       html.classList.remove("dark");
       localStorage.setItem("theme", "light");
     } else {
