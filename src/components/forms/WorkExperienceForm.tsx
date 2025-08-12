@@ -32,6 +32,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
   onChange,
 }) => {
   const [highlights, setHighlights] = useState<{ [key: string]: string }>({});
+  // use expId as key, value is index of editing highlight (like skills)
   const [editingHighlight, setEditingHighlight] = useState<{
     [expId: string]: number | null;
   }>({});
@@ -127,6 +128,9 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
     };
 
     const isEditing = editingHighlight[expId] === index;
+    const editingValue = isEditing
+      ? (editingHighlightValue[expId] ?? highlight)
+      : highlight;
 
     return (
       <div
@@ -152,25 +156,14 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
         {isEditing ? (
           <Textarea
             className="flex-1 resize-none text-sm"
-            value={editingHighlightValue[expId] ?? highlight}
+            defaultValue={editingHighlightValue[expId] ?? highlight}
             autoFocus
             rows={Math.max(
               2,
               (editingHighlightValue[expId] ?? highlight).split("\n").length,
             )}
-            onChange={(e) =>
-              setEditingHighlightValue((prev) => ({
-                ...prev,
-                [expId]: e.target.value,
-              }))
-            }
-            onBlur={() => {
-              // save on blur
-              updateHighlightInline(
-                expId,
-                index,
-                editingHighlightValue[expId] ?? highlight,
-              );
+            onBlur={(e) => {
+              updateHighlightInline(expId, index, e.target.value);
             }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -178,7 +171,7 @@ const WorkExperienceForm: React.FC<WorkExperienceFormProps> = ({
                 updateHighlightInline(
                   expId,
                   index,
-                  editingHighlightValue[expId] ?? highlight,
+                  (e.target as HTMLTextAreaElement).value,
                 );
               } else if (e.key === "Escape") {
                 setEditingHighlight((prev) => ({ ...prev, [expId]: null }));
