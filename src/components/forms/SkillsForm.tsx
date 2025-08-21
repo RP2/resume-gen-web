@@ -1,3 +1,44 @@
+// SortableCategory wrapper for skill categories (like SortableProject in ProjectsForm)
+function SortableCategory({
+  id,
+  children,
+}: {
+  id: string;
+  children: React.ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.7 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} className="relative">
+      {/* drag handle for category */}
+      <button
+        {...listeners}
+        className="focus-visible:ring-primary absolute top-6 left-5 z-10 h-8 w-8 items-center justify-center rounded focus:outline-none focus-visible:ring-2"
+        style={{ cursor: isDragging ? "grabbing" : "grab" }}
+        tabIndex={0}
+        aria-label="Drag to reorder category"
+        type="button"
+      >
+        <GripVertical className="text-muted-foreground h-5 w-5" />
+      </button>
+      <div>{children}</div>
+    </div>
+  );
+}
 import { useState } from "react";
 import { Plus, Trash2, Eye, EyeOff, GripVertical, X } from "lucide-react";
 import {
@@ -239,6 +280,23 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
     }
   };
 
+  // sensors for category drag-and-drop
+  const categorySensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  // handle drag end for skill categories
+  function handleSkillCategoryDragEnd(event: any) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = data.findIndex((cat) => cat.id === active.id);
+    const newIndex = data.findIndex((cat) => cat.id === over.id);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      const newCategories = arrayMove(data, oldIndex, newIndex);
+      onChange(newCategories);
+    }
+  }
+
   return (
     <div className="space-y-4 sm:space-y-6" data-section="skills">
       <div className="flex items-center justify-between">
@@ -255,138 +313,157 @@ const SkillsForm: React.FC<SkillsFormProps> = ({ data, onChange }) => {
           type.
         </p>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
-          {data.map((skillCategory) => (
-            <Card
-              key={skillCategory.id}
-              data-content="skill-category"
-              data-skill-category-id={skillCategory.id}
-            >
-              <CardHeader className="pb-2 sm:pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm sm:text-base">
-                    Skill Category
-                  </CardTitle>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        toggleSkillCategoryVisibility(skillCategory.id)
-                      }
-                      title={
-                        skillCategory.visible !== false
-                          ? "Hide from resume"
-                          : "Show in resume"
-                      }
-                    >
-                      {skillCategory.visible !== false ? (
-                        <Eye className="h-4 w-4" />
-                      ) : (
-                        <EyeOff className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeSkillCategory(skillCategory.id)}
-                      title="Delete permanently"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4">
-                <div className="space-y-2 sm:space-y-3">
-                  <Label>Category Name *</Label>
-                  <Input
-                    value={skillCategory.category}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      updateSkillCategory(
-                        skillCategory.id,
-                        "category",
-                        e.target.value,
-                      )
-                    }
-                    placeholder="e.g., Programming Languages, Frameworks, Tools"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Skills</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      value={newSkillInputs[skillCategory.id] || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewSkillInputs((prev) => ({
-                          ...prev,
-                          [skillCategory.id]: e.target.value,
-                        }))
-                      }
-                      placeholder="Add a skill..."
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addSkill(skillCategory.id);
-                        }
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      onClick={() => addSkill(skillCategory.id)}
-                      size="sm"
-                      data-action="add-skill"
-                    >
-                      Add
-                    </Button>
-                  </div>
-
-                  {skillCategory.skills.length > 0 && (
-                    <DndContext
-                      sensors={useSensors(
-                        useSensor(PointerSensor, {
-                          activationConstraint: { distance: 5 },
-                        }),
-                      )}
-                      collisionDetection={closestCenter}
-                      onDragEnd={(event) =>
-                        handleSkillDragEnd(skillCategory.id, event)
-                      }
-                      measuring={{
-                        droppable: {
-                          strategy: MeasuringStrategy.Always,
-                        },
-                      }}
-                    >
-                      <SortableContext
-                        items={skillCategory.skills.map(
-                          (_, i) => `skill-${skillCategory.id}-${i}`,
-                        )}
-                        strategy={rectSortingStrategy}
-                      >
-                        <div
-                          className="mt-3 flex flex-wrap gap-2"
-                          data-content="skill-list"
-                        >
-                          {skillCategory.skills.map((skill, index) => (
-                            <SortableSkill
-                              key={`skill-${skillCategory.id}-${index}`}
-                              id={`skill-${skillCategory.id}-${index}`}
-                              skill={skill}
-                              index={index}
-                              catId={skillCategory.id}
-                            />
-                          ))}
+        <DndContext
+          sensors={categorySensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleSkillCategoryDragEnd}
+          measuring={{
+            droppable: { strategy: MeasuringStrategy.Always },
+          }}
+        >
+          <SortableContext
+            items={data.map((cat) => cat.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="space-y-3 sm:space-y-4">
+              {data.map((skillCategory) => (
+                <SortableCategory key={skillCategory.id} id={skillCategory.id}>
+                  <Card
+                    data-content="skill-category"
+                    data-skill-category-id={skillCategory.id}
+                  >
+                    <CardHeader className="pb-2 sm:pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="ml-4 text-sm sm:text-base">
+                          Skill Category
+                        </CardTitle>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() =>
+                              toggleSkillCategoryVisibility(skillCategory.id)
+                            }
+                            title={
+                              skillCategory.visible !== false
+                                ? "Hide from resume"
+                                : "Show in resume"
+                            }
+                          >
+                            {skillCategory.visible !== false ? (
+                              <Eye className="h-4 w-4" />
+                            ) : (
+                              <EyeOff className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() =>
+                              removeSkillCategory(skillCategory.id)
+                            }
+                            title="Delete permanently"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
-                      </SortableContext>
-                    </DndContext>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3 sm:space-y-4">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label>Category Name *</Label>
+                        <Input
+                          value={skillCategory.category}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            updateSkillCategory(
+                              skillCategory.id,
+                              "category",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="e.g., Programming Languages, Frameworks, Tools"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Skills</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            value={newSkillInputs[skillCategory.id] || ""}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              setNewSkillInputs((prev) => ({
+                                ...prev,
+                                [skillCategory.id]: e.target.value,
+                              }))
+                            }
+                            placeholder="Add a skill..."
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                addSkill(skillCategory.id);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => addSkill(skillCategory.id)}
+                            size="sm"
+                            data-action="add-skill"
+                          >
+                            Add
+                          </Button>
+                        </div>
+
+                        {skillCategory.skills.length > 0 && (
+                          <DndContext
+                            sensors={useSensors(
+                              useSensor(PointerSensor, {
+                                activationConstraint: { distance: 5 },
+                              }),
+                            )}
+                            collisionDetection={closestCenter}
+                            onDragEnd={(event) =>
+                              handleSkillDragEnd(skillCategory.id, event)
+                            }
+                            measuring={{
+                              droppable: {
+                                strategy: MeasuringStrategy.Always,
+                              },
+                            }}
+                          >
+                            <SortableContext
+                              items={skillCategory.skills.map(
+                                (_, i) => `skill-${skillCategory.id}-${i}`,
+                              )}
+                              strategy={rectSortingStrategy}
+                            >
+                              <div
+                                className="mt-3 flex flex-wrap gap-2"
+                                data-content="skill-list"
+                              >
+                                {skillCategory.skills.map((skill, index) => (
+                                  <SortableSkill
+                                    key={`skill-${skillCategory.id}-${index}`}
+                                    id={`skill-${skillCategory.id}-${index}`}
+                                    skill={skill}
+                                    index={index}
+                                    catId={skillCategory.id}
+                                  />
+                                ))}
+                              </div>
+                            </SortableContext>
+                          </DndContext>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </SortableCategory>
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );

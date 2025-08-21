@@ -240,6 +240,62 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
     }
   };
 
+  // drag-and-drop for projects
+  const projectSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
+  function handleProjectDragEnd(event: any) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const oldIndex = data.findIndex((p) => p.id === active.id);
+    const newIndex = data.findIndex((p) => p.id === over.id);
+    if (oldIndex !== -1 && newIndex !== -1) {
+      onChange(arrayMove(data, oldIndex, newIndex));
+    }
+  }
+
+  function SortableProject({
+    id,
+    children,
+  }: {
+    id: string;
+    children: React.ReactNode;
+  }) {
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
+
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.7 : 1,
+      zIndex: isDragging ? 10 : undefined,
+    };
+
+    return (
+      <div ref={setNodeRef} style={style} {...attributes} className="relative">
+        {/* drag handle */}
+        <button
+          {...listeners}
+          className="focus-visible:ring-primary absolute top-6 left-5 z-10 h-8 w-8 items-center justify-center rounded focus:outline-none focus-visible:ring-2"
+          style={{ cursor: isDragging ? "grabbing" : "grab" }}
+          tabIndex={0}
+          aria-label="Drag to reorder project"
+          type="button"
+        >
+          <GripVertical className="text-muted-foreground h-5 w-5" />
+        </button>
+        <div className="">{children}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4 sm:space-y-6" data-section="projects">
       <div className="flex items-center justify-between">
@@ -255,175 +311,215 @@ const ProjectsForm: React.FC<ProjectsFormProps> = ({ data, onChange }) => {
           No projects added yet. Click "Add Project" to showcase your work.
         </p>
       ) : (
-        <div className="space-y-3 sm:space-y-4">
-          {data.map((project) => (
-            <Card key={project.id} data-content="project">
-              <CardHeader className="pb-2 sm:pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm sm:text-base">
-                    Project Details
-                  </CardTitle>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => toggleProjectVisibility(project.id)}
-                      title={
-                        project.visible !== false
-                          ? "Hide from resume"
-                          : "Show in resume"
-                      }
-                    >
-                      {project.visible !== false ? (
-                        <Eye className="h-4 w-4" />
-                      ) : (
-                        <EyeOff className="h-4 w-4" />
-                      )}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeProject(project.id)}
-                      title="Delete permanently"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3 sm:space-y-4">
-                <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label>Project Name *</Label>
-                    <Input
-                      value={project.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        updateProject(project.id, "name", e.target.value)
-                      }
-                      placeholder="My Awesome Project"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Start Date</Label>
-                    <Input
-                      type="month"
-                      value={project.startDate}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        updateProject(project.id, "startDate", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>End Date</Label>
-                    <Input
-                      type="month"
-                      value={project.endDate || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        updateProject(project.id, "endDate", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Live Demo URL</Label>
-                    <Input
-                      value={project.url || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        updateProject(project.id, "url", e.target.value)
-                      }
-                      placeholder="https://myproject.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Description *</Label>
-                  <Textarea
-                    value={project.description}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      updateProject(project.id, "description", e.target.value)
-                    }
-                    placeholder="Brief description of the project, what it does, and your role..."
-                    rows={3}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Technologies Used</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      value={newTechInputs[project.id] || ""}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setNewTechInputs((prev) => ({
-                          ...prev,
-                          [project.id]: e.target.value,
-                        }))
-                      }
-                      placeholder="Add a technology..."
-                      onKeyPress={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          addTechnology(project.id);
-                        }
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      onClick={() => addTechnology(project.id)}
-                      size="sm"
-                      data-action="add-technology"
-                    >
-                      Add
-                    </Button>
-                  </div>
-
-                  {project.technologies.length > 0 && (
-                    <DndContext
-                      sensors={useSensors(
-                        useSensor(PointerSensor, {
-                          activationConstraint: { distance: 5 },
-                        }),
-                      )}
-                      collisionDetection={closestCenter}
-                      onDragEnd={(event) =>
-                        handleTechDragEnd(project.id, event)
-                      }
-                      measuring={{
-                        droppable: {
-                          strategy: MeasuringStrategy.Always,
-                        },
-                      }}
-                    >
-                      <SortableContext
-                        items={project.technologies.map(
-                          (_, i) => `tech-${project.id}-${i}`,
-                        )}
-                        strategy={rectSortingStrategy}
-                      >
-                        <div
-                          className="mt-3 flex flex-wrap gap-2"
-                          data-content="technology-list"
-                        >
-                          {project.technologies.map((tech, index) => (
-                            <SortableTech
-                              key={`tech-${project.id}-${index}`}
-                              id={`tech-${project.id}-${index}`}
-                              tech={tech}
-                              index={index}
-                              projectId={project.id}
-                            />
-                          ))}
+        <DndContext
+          sensors={projectSensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleProjectDragEnd}
+          measuring={{
+            droppable: { strategy: MeasuringStrategy.Always },
+          }}
+        >
+          <SortableContext
+            items={data.map((p) => p.id)}
+            strategy={rectSortingStrategy}
+          >
+            <div className="space-y-3 sm:space-y-4">
+              {data.map((project) => (
+                <SortableProject key={project.id} id={project.id}>
+                  <Card data-content="project">
+                    <CardHeader className="pb-2 sm:pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="ml-4 text-sm sm:text-base">
+                          Project Details
+                        </CardTitle>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleProjectVisibility(project.id)}
+                            title={
+                              project.visible !== false
+                                ? "Hide from resume"
+                                : "Show in resume"
+                            }
+                          >
+                            {project.visible !== false ? (
+                              <Eye className="h-4 w-4" />
+                            ) : (
+                              <EyeOff className="h-4 w-4" />
+                            )}
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeProject(project.id)}
+                            title="Delete permanently"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
                         </div>
-                      </SortableContext>
-                    </DndContext>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3 sm:space-y-4">
+                      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Project Name *</Label>
+                          <Input
+                            value={project.name}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              updateProject(project.id, "name", e.target.value)
+                            }
+                            placeholder="My Awesome Project"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Start Date</Label>
+                          <Input
+                            type="month"
+                            value={project.startDate}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              updateProject(
+                                project.id,
+                                "startDate",
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>End Date</Label>
+                          <Input
+                            type="month"
+                            value={project.endDate || ""}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              updateProject(
+                                project.id,
+                                "endDate",
+                                e.target.value,
+                              )
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Live Demo URL</Label>
+                          <Input
+                            value={project.url || ""}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              updateProject(project.id, "url", e.target.value)
+                            }
+                            placeholder="https://myproject.com"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Description *</Label>
+                        <Textarea
+                          value={project.description}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLTextAreaElement>,
+                          ) =>
+                            updateProject(
+                              project.id,
+                              "description",
+                              e.target.value,
+                            )
+                          }
+                          placeholder="Brief description of the project, what it does, and your role..."
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Technologies Used</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            value={newTechInputs[project.id] || ""}
+                            onChange={(
+                              e: React.ChangeEvent<HTMLInputElement>,
+                            ) =>
+                              setNewTechInputs((prev) => ({
+                                ...prev,
+                                [project.id]: e.target.value,
+                              }))
+                            }
+                            placeholder="Add a technology..."
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                addTechnology(project.id);
+                              }
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => addTechnology(project.id)}
+                            size="sm"
+                            data-action="add-technology"
+                          >
+                            Add
+                          </Button>
+                        </div>
+
+                        {project.technologies.length > 0 && (
+                          <DndContext
+                            sensors={useSensors(
+                              useSensor(PointerSensor, {
+                                activationConstraint: { distance: 5 },
+                              }),
+                            )}
+                            collisionDetection={closestCenter}
+                            onDragEnd={(event) =>
+                              handleTechDragEnd(project.id, event)
+                            }
+                            measuring={{
+                              droppable: {
+                                strategy: MeasuringStrategy.Always,
+                              },
+                            }}
+                          >
+                            <SortableContext
+                              items={project.technologies.map(
+                                (_, i) => `tech-${project.id}-${i}`,
+                              )}
+                              strategy={rectSortingStrategy}
+                            >
+                              <div
+                                className="mt-3 flex flex-wrap gap-2"
+                                data-content="technology-list"
+                              >
+                                {project.technologies.map((tech, index) => (
+                                  <SortableTech
+                                    key={`tech-${project.id}-${index}`}
+                                    id={`tech-${project.id}-${index}`}
+                                    tech={tech}
+                                    index={index}
+                                    projectId={project.id}
+                                  />
+                                ))}
+                              </div>
+                            </SortableContext>
+                          </DndContext>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </SortableProject>
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
     </div>
   );
